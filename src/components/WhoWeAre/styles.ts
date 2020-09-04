@@ -8,17 +8,10 @@ const styles = StyleSheet.create({
   },
 
   textContainer: {
-    backgroundColor: '#F7FAFB',
+    backgroundColor: '#EDEDED',
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
     flex: 1,
-  },
-
-  body: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    lineHeight: 21,
-    marginVertical: 36,
   },
 
   scrollview: {
@@ -35,7 +28,7 @@ const styles = StyleSheet.create({
 
   bold: {
     fontWeight: 'bold',
-    color: '#249CC9',
+    color: '#CA53D7',
   },
 });
 

@@ -16,7 +16,7 @@ const Header: React.FC = ({ children }) => {
       <MaterialIcons
         name="arrow-back"
         size={24}
-        color="black"
+        color="#4A2787"
         style={styles.goBackIcon}
         onPress={handleGoBackButton}
       />

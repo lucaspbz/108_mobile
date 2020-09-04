@@ -4,12 +4,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: '#FFF',
+  },
+
+  header: {
+    width: '100%',
+    marginBottom: 26,
+    marginTop: 26,
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 
   goBackIcon: {
-    position: 'absolute',
-    top: 24,
-    left: 24,
+    marginHorizontal: 24,
   },
 
   userName: {
@@ -19,43 +26,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-end',
     marginRight: 120,
-    marginTop: 56,
     textAlign: 'right',
-  },
-
-  avatarContainer: {
-    position: 'absolute',
-    top: 36,
-    right: 36,
-  },
-
-  avatar: {
-    width: 65,
-    height: 65,
-    borderRadius: 50,
-  },
-
-  editIcon: {
-    backgroundColor: '#4DACD1',
-    width: 26,
-    height: 26,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
-    position: 'absolute',
-    bottom: -5,
-    right: -5,
-  },
-
-  wellcomeText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    lineHeight: 28,
-    alignSelf: 'flex-start',
-    marginTop: 24,
-    marginLeft: 40,
-    marginBottom: 16,
-    height: 80,
   },
 
   description: {
@@ -70,7 +41,6 @@ const styles = StyleSheet.create({
 
   list: {
     width: '100%',
-    backgroundColor: '#F7FAFB',
     flex: 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
@@ -79,7 +49,7 @@ const styles = StyleSheet.create({
   itemCard: {
     width: 328,
     height: 153,
-    backgroundColor: '#D3E3E9',
+    backgroundColor: '#EDEDED',
     borderRadius: 15,
     marginBottom: 24,
     alignSelf: 'center',
@@ -93,11 +63,17 @@ const styles = StyleSheet.create({
     elevation: 19,
   },
 
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 16,
+  },
+
   date: {
     marginTop: 16,
     marginLeft: 16,
     marginBottom: 16,
-    color: '#333333',
+    color: '#8739B3',
     fontSize: 16,
     lineHeight: 26,
   },
@@ -114,6 +90,18 @@ const styles = StyleSheet.create({
     color: '#333333',
     fontSize: 16,
     lineHeight: 19,
+  },
+
+  logoutContainer: {
+    width: '100%',
+    marginTop: 16,
+  },
+
+  logoutText: {
+    marginLeft: 16,
+    marginBottom: 56,
+    fontSize: 18,
+    lineHeight: 28,
   },
 });
 

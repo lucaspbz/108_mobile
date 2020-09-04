@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+
+import { useAuth } from '../../hooks/auth';
 
 import styles from './styles';
 
 const AuthenticatedHeader: React.FC = () => {
+  const { user } = useAuth();
   const navigate = useNavigation();
 
   function handleNavigateToProfile() {
@@ -14,14 +17,8 @@ const AuthenticatedHeader: React.FC = () => {
 
   return (
     <View style={styles.header}>
-      <RectButton style={styles.imgContainer} onPress={handleNavigateToProfile}>
-        <Image
-          source={{
-            uri:
-              'https://avatars0.githubusercontent.com/u/59059141?s=460&u=8f3d3703ef24b4436288f77adedf3408ffc56852&v=4https://avatars2.githubusercontent.com/u/59059141?s=60&v=4',
-          }}
-          style={styles.avatar}
-        />
+      <RectButton style={styles.userName} onPress={handleNavigateToProfile}>
+        <Text style={styles.userNameText}>{user.name}</Text>
       </RectButton>
 
       <Text style={styles.title}>108 horas orando com a Mãe Divina</Text>

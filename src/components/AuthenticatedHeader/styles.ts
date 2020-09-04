@@ -1,25 +1,23 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  imgContainer: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-  },
-
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 50,
-  },
-
   header: {
-    backgroundColor: '#A6D8EF',
+    backgroundColor: 'rgba(202, 83, 215, 0.6)',
     width: '100%',
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
+  },
+
+  userName: { position: 'absolute', top: 18, right: 18 },
+
+  userNameText: {
+    color: '#4A2787',
+    fontWeight: '500',
+    fontSize: 14,
+    textAlign: 'right',
   },
 
   title: {
@@ -34,10 +32,9 @@ const styles = StyleSheet.create({
 
   subtitle: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 21,
     fontWeight: 'bold',
-    marginTop: 8,
     marginBottom: 32,
   },
 });

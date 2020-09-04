@@ -4,10 +4,10 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginBottom: 32,
     width: '100%',
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
+    backgroundColor: '#EDEDED',
   },
 
   tabItems: {
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
 
   activeBar: {
-    backgroundColor: '#249CC9',
+    backgroundColor: '#8739B3',
     width: 36,
     height: 5,
     alignSelf: 'center',

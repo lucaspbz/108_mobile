@@ -5,22 +5,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-
-  text: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    lineHeight: 21,
-    marginVertical: 36,
-  },
-
-  body: {
-    flex: 1,
+    backgroundColor: '#EDEDED',
+    paddingTop: 16,
     width: '100%',
   },
 
   scheduleItem: {
-    backgroundColor: '#249CC9',
+    backgroundColor: '#8739B3',
     height: 40,
     width: 92,
     borderRadius: 15,
@@ -37,24 +28,44 @@ const styles = StyleSheet.create({
 
   dayList: {
     flexDirection: 'row',
+    marginHorizontal: 8,
   },
 
   selectedItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#EDEDED',
     borderWidth: 2.5,
-    borderColor: '#249CC9',
+    borderColor: '#8739B3',
   },
 
   selectedItemText: {
-    color: '#249CC9',
+    color: '#8739B3',
   },
 
   itemTitle: {
     marginLeft: 32,
     color: '#333333',
-    fontWeight: '500',
+    fontWeight: 'bold',
     fontSize: 18,
     lineHeight: 28,
+  },
+
+  button: {
+    width: 200,
+    height: 48,
+    backgroundColor: '#4A2787',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 16,
+    marginBottom: 32,
+  },
+
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    lineHeight: 26,
   },
 });
 

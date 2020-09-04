@@ -1,7 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'space-evenly' },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 
   textContainer: {
     justifyContent: 'center',
@@ -31,11 +35,11 @@ const styles = StyleSheet.create({
 
   buttonsContainer: {
     alignItems: 'center',
-    marginTop: 24,
+    marginBottom: 80,
   },
 
   registerButton: {
-    backgroundColor: '#4DACD1',
+    backgroundColor: '#4A2787',
     width: 296,
     height: 56,
     borderRadius: 12,
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
   },
 
   alreadyRegisteredButtonText: {
-    color: '#4DACD1',
+    color: '#4A2787',
     fontWeight: 'bold',
     fontSize: 14,
     lineHeight: 26,

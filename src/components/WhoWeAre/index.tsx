@@ -1,21 +1,12 @@
 import React from 'react';
-import { View, Text, ScrollView, Linking, SafeAreaView } from 'react-native';
-
-import AuthenticatedHeader from '../../components/AuthenticatedHeader';
+import { View, Text, ScrollView, Linking } from 'react-native';
 
 import styles from './styles';
-import NavBar from '../../components/NavBar';
 
 const WhoWeAre: React.FC = () => {
   return (
     <View style={styles.container}>
-      {/* <AuthenticatedHeader />
-
-      <Text style={styles.body}>Colabore com nossa jornada de cura !</Text> */}
-
       <View style={styles.textContainer}>
-        {/* <NavBar page="WhoWeAre" /> */}
-
         <ScrollView style={styles.scrollview}>
           <Text style={styles.text}>
             108 horas Orando com a Mãe Divina é um movimento coletivo e
@@ -54,7 +45,7 @@ const WhoWeAre: React.FC = () => {
               style={[
                 {
                   textDecorationLine: 'underline',
-                  color: '#4EAFD3',
+                  color: '#CA53D7',
                 },
               ]}
             >

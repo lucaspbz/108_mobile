@@ -10,19 +10,28 @@ const styles = StyleSheet.create({
 
   loginForm: {
     width: '100%',
-    marginTop: 24,
+    marginTop: 48,
     flex: 1,
   },
 
   formField: {
-    marginBottom: 8,
+    marginBottom: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginRight: 24,
   },
 
-  label: {},
+  label: {
+    maxWidth: 80,
+  },
 
-  genericField: {},
-
-  secretField: {},
+  genericField: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+    width: 240,
+    textAlign: 'center',
+  },
 
   formFieldSelect: {
     flexDirection: 'row',
@@ -33,7 +42,7 @@ const styles = StyleSheet.create({
   picker: { width: '80%' },
 
   registerButton: {
-    backgroundColor: '#249CC9',
+    backgroundColor: '#4A2787',
     width: 300,
     height: 56,
     borderRadius: 12,

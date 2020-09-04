@@ -5,19 +5,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-
-  body: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    lineHeight: 21,
-    marginVertical: 36,
+    backgroundColor: '#EDEDED',
   },
 
   footer: {
     flex: 1,
     width: '100%',
-    backgroundColor: '#F7FAFB',
     borderTopRightRadius: 16,
     borderTopLeftRadius: 16,
   },

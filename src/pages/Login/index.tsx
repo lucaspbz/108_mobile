@@ -1,19 +1,41 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
+
+import { useAuth } from '../../hooks/auth';
 
 import Header from '../../components/Header';
 
 import styles from './styles';
 
 const Login: React.FC = () => {
-  const ref_input2 = useRef();
-  const navigate = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { signIn } = useAuth();
 
-  function handleLogin() {
-    navigate.navigate('MainPage');
-  }
+  const ref_input2 = useRef();
+
+  const handleLogin = useCallback(async () => {
+    try {
+      await signIn({ email, password });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [email, password]);
+
+  const handleEmailChange = useCallback(
+    (text) => {
+      setEmail(text);
+    },
+    [email]
+  );
+
+  const handlePasswordChange = useCallback(
+    (text) => {
+      setPassword(text);
+    },
+    [password]
+  );
 
   return (
     <View style={styles.container}>
@@ -34,7 +56,8 @@ const Login: React.FC = () => {
             textContentType="emailAddress"
             placeholder="emaildousuario@usuario"
             style={styles.emailField}
-          ></TextInput>
+            onChangeText={handleEmailChange}
+          />
         </View>
 
         <View style={styles.formField}>
@@ -45,7 +68,8 @@ const Login: React.FC = () => {
             textContentType="password"
             style={styles.passwordField}
             ref={ref_input2}
-          ></TextInput>
+            onChangeText={handlePasswordChange}
+          />
         </View>
       </View>
 
