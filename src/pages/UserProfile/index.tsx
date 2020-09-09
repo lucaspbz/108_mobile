@@ -1,11 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+
+import Modal from '../../components/Modal';
 
 import FrameImg from '../../assets/Frame.png';
 
 import { useAuth } from '../../hooks/auth';
+
+import {
+  groupByDatesWithId,
+  MappedScheduleWithIdInterface,
+  formatToDayString,
+  formatToHour,
+} from '../../util/dateParser';
 
 import {
   Container,
@@ -27,36 +36,68 @@ import {
 } from './styles';
 import api from '../../services/api';
 
-import {
-  groupByDates,
-  MappedScheduleInterface,
-  formatToDayString,
-  formatToHour,
-} from '../../util/dateParser';
-
 const UserProfile: React.FC = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [timeToBeDeleted, setTimeToBeDeleted] = useState(
+    {} as { time: string; id: string }
+  );
   const [appointments, setAppointments] = useState<
-    MappedScheduleInterface[] | null
+    MappedScheduleWithIdInterface[] | null
   >([]);
   const { user, signOut } = useAuth();
   const navigate = useNavigation();
 
   useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = useCallback(() => {
     api.get(`/users/${user?.id}`).then(({ data }) => {
       try {
-        const filteredAppointments = data.appointments.map((item) => item.date);
+        const filteredAppointments = data.appointments.map(
+          (item: { date: string; id: string }) => ({
+            date: item.date,
+            id: item.id,
+          })
+        );
 
-        const appointmentsByDay = groupByDates({ data: filteredAppointments });
+        const appointmentsByDay = groupByDatesWithId({
+          schedule: filteredAppointments,
+        });
         setAppointments(appointmentsByDay);
       } catch (error) {
         setAppointments(null);
       }
     });
-  }, []);
+  }, [user]);
 
   function handleGoBackButton() {
     navigate.goBack();
   }
+
+  const handleOpenDeleteModal = useCallback(
+    (time: string, id: string) => {
+      setTimeToBeDeleted({ time, id });
+      setModalVisible(true);
+    },
+    [timeToBeDeleted]
+  );
+
+  const handleDeleteTime = useCallback(
+    (id: string) => {
+      api
+        .delete(`/appointments/${id}`)
+        .then(() => {
+          loadUserData();
+          setModalVisible(false);
+        })
+        .catch(() => {
+          setModalVisible(false);
+          Alert.alert('Parece que algo deu errado :(');
+        });
+    },
+    [timeToBeDeleted]
+  );
 
   const handleLogout = useCallback(() => {
     signOut();
@@ -64,6 +105,18 @@ const UserProfile: React.FC = () => {
 
   return (
     <Container>
+      {modalVisible && (
+        <Modal
+          time={timeToBeDeleted.time}
+          onConfirm={() => {
+            handleDeleteTime(timeToBeDeleted.id);
+          }}
+          onClose={() => {
+            setModalVisible(false);
+          }}
+        />
+      )}
+
       <Header>
         <MaterialIcons
           name="arrow-back"
@@ -76,7 +129,7 @@ const UserProfile: React.FC = () => {
         <UserName>Olá, {user?.name}</UserName>
       </Header>
 
-      {!appointments && (
+      {appointments && (
         <List>
           <Description>Meus horários:</Description>
           {appointments.map(({ day, times }) => (
@@ -90,10 +143,15 @@ const UserProfile: React.FC = () => {
                 <Date>{formatToDayString({ day })}:</Date>
               </DateContainer>
 
-              {times.map((time) => (
-                <ItemLine key={time}>
+              {times.map(({ time, id }) => (
+                <ItemLine key={id}>
                   <ItemHour>{formatToHour({ time })}</ItemHour>
-                  <TouchableOpacity style={{ marginRight: 24 }}>
+                  <TouchableOpacity
+                    style={{ marginRight: 24 }}
+                    onPress={() => {
+                      handleOpenDeleteModal(time, id);
+                    }}
+                  >
                     <MaterialIcons name="delete" size={24} color="#CA53D7" />
                   </TouchableOpacity>
                 </ItemLine>
@@ -103,7 +161,7 @@ const UserProfile: React.FC = () => {
         </List>
       )}
 
-      {appointments && (
+      {!appointments && (
         <NoAppointmentsContainer>
           <NoAppointmentsImage source={FrameImg} />
           <NoAppointmentsMainText>

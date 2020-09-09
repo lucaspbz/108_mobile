@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, Image } from 'react-native';
-import { Link } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 
 import landingImg from '../../assets/login.png';
 
 import styles from './styles';
+import Button from '../../components/Button';
 
 const Landing: React.FC = () => {
+  const navigation = useNavigation();
+  const handleRegister = useCallback(() => {
+    navigation.navigate('Register');
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -20,11 +25,7 @@ const Landing: React.FC = () => {
       <Image style={styles.banner} source={landingImg} />
 
       <View style={styles.buttonsContainer}>
-        <View style={styles.registerButton}>
-          <Link to="/Register">
-            <Text style={styles.registerButtonText}> Cadastre-se </Text>
-          </Link>
-        </View>
+        <Button title="Cadastre-se" onPress={handleRegister} />
 
         <Link style={styles.alreadyRegisteredButton} to="/Login">
           <Text style={styles.alreadyRegisteredButtonText}>Já tenho conta</Text>

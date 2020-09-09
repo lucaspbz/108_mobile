@@ -42,12 +42,6 @@ const styles = StyleSheet.create({
   picker: { width: '80%' },
 
   registerButton: {
-    backgroundColor: '#4A2787',
-    width: 300,
-    height: 56,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 40,
   },
 

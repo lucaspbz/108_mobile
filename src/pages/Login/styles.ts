@@ -37,23 +37,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
   },
-
-  loginButton: {
-    width: 328,
-    height: 56,
-    backgroundColor: '#4A2787',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 12,
-    marginTop: 32,
-  },
-
-  loginButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 14,
-    lineHeight: 26,
-  },
 });
 
 export default styles;

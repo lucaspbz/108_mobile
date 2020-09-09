@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
+export const Container = styled.SafeAreaView`
   flex: 1;
   align-items: center;
   background-color: #fff;
@@ -53,9 +53,9 @@ export const ItemCard = styled.View`
     width: 0px;
     height: 9px;
   }
-  shadow-opacity: 0.5px;
+  shadow-opacity: 0.5;
   shadow-radius: 12.35px;
-  elevation: 19px;
+  elevation: 19;
 `;
 
 export const DateContainer = styled.View`

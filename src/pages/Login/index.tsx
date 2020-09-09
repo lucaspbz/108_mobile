@@ -1,24 +1,25 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { View, Text, TextInput, Alert } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Alert, SafeAreaView } from 'react-native';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import { useAuth } from '../../hooks/auth';
 import { useSchedule } from '../../hooks/schedule';
 
 import Header from '../../components/Header';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
 
 import styles from './styles';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const { signIn } = useAuth();
   const { updateAvailableTimes } = useSchedule();
 
-  const ref_input2 = useRef<HTMLInputElement>();
+  const ref_input2 = useRef<HTMLInputElement>(null);
+  const formRef = useRef<FormHandles>(null);
 
-  const handleLogin = useCallback(async () => {
+  const handleLogin = useCallback(async ({ email, password }) => {
     signIn({ email, password })
       .then((response) => updateAvailableTimes())
       .catch((error) => {
@@ -26,62 +27,44 @@ const Login: React.FC = () => {
           Alert.alert('Email ou senha incorretos!');
         }
       });
-  }, [email, password]);
-
-  const handleEmailChange = useCallback(
-    (text) => {
-      setEmail(text);
-    },
-    [email]
-  );
-
-  const handlePasswordChange = useCallback(
-    (text) => {
-      setPassword(text);
-    },
-    [password]
-  );
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header>Insira suas informações para realizar o login</Header>
 
-      <View style={styles.loginForm}>
-        <View style={styles.formField}>
-          <Text style={styles.label}>E-mail:</Text>
-          <TextInput
-            onSubmitEditing={() => {
-              ref_input2.current?.focus();
-            }}
-            returnKeyType="next"
-            autoCapitalize="none"
-            enablesReturnKeyAutomatically
-            autoFocus
-            autoCompleteType="email"
-            textContentType="emailAddress"
-            placeholder="emaildousuario@usuario"
-            style={styles.emailField}
-            onChangeText={handleEmailChange}
-          />
-        </View>
+      <Form ref={formRef} style={styles.loginForm} onSubmit={handleLogin}>
+        <Input
+          label="E-mail"
+          name="email"
+          placeholder="emaildousuario@usuario"
+          returnKeyType="next"
+          autoCapitalize="none"
+          enablesReturnKeyAutomatically
+          autoFocus
+          autoCompleteType="email"
+          textContentType="emailAddress"
+        />
 
-        <View style={styles.formField}>
-          <Text style={styles.label}>Senha:</Text>
-          <TextInput
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType="password"
-            style={styles.passwordField}
-            ref={ref_input2}
-            onChangeText={handlePasswordChange}
-          />
-        </View>
-      </View>
+        <Input
+          label="Senha"
+          name="password"
+          secureTextEntry
+          autoCapitalize="none"
+          textContentType="password"
+          style={styles.passwordField}
+          ref={ref_input2}
+        />
+      </Form>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Entrar</Text>
-      </TouchableOpacity>
-    </View>
+      <Button
+        style={{ marginTop: 80 }}
+        title="Entrar"
+        onPress={() => {
+          formRef.current?.submitForm();
+        }}
+      />
+    </SafeAreaView>
   );
 };
 

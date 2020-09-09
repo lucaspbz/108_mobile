@@ -15,6 +15,7 @@ import { userValidator } from '../../util/validators';
 import { useAuth } from '../../hooks/auth';
 
 import styles from './styles';
+import Button from '../../components/Button';
 
 interface UserInterface {
   name: string;
@@ -172,6 +173,7 @@ const Register: React.FC = () => {
         />
 
         <Input
+          autoCorrect={false}
           name="email"
           label="E-mail"
           keyboardType="email-address"
@@ -252,15 +254,13 @@ const Register: React.FC = () => {
         )}
       </Form>
 
-      <View style={styles.registerButton}>
-        <TouchableOpacity
-          onPress={() => {
-            formRef.current?.submitForm();
-          }}
-        >
-          <Text style={styles.registerButtonText}> Finalizar cadastro </Text>
-        </TouchableOpacity>
-      </View>
+      <Button
+        style={styles.registerButton}
+        title="Finalizar cadastro"
+        onPress={() => {
+          formRef.current?.submitForm();
+        }}
+      />
     </View>
   );
 };

@@ -11,6 +11,7 @@ import { formatToDayString, formatToHour } from '../../util/dateParser';
 
 import styles from './styles';
 import api from '../../services/api';
+import Button from '../Button';
 
 const AvailableSchedule: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -110,14 +111,15 @@ const AvailableSchedule: React.FC = () => {
           );
         }}
       ></FlatList>
-      {selectedTimes.length > 0 && (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleConfirmSelectedTimes}
-        >
-          <Text style={styles.buttonText}>Confirme meu(s) horário(s)</Text>
-        </TouchableOpacity>
-      )}
+      <View style={{ height: 100 }}>
+        {selectedTimes.length > 0 && (
+          <Button
+            style={styles.button}
+            title="Confirme meu(s) horário(s)"
+            onPress={handleConfirmSelectedTimes}
+          />
+        )}
+      </View>
     </View>
   );
 };

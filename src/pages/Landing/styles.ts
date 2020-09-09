@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 16,
   },
 
   textContainer: {
@@ -36,22 +37,6 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     alignItems: 'center',
     marginBottom: 80,
-  },
-
-  registerButton: {
-    backgroundColor: '#4A2787',
-    width: 296,
-    height: 56,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  registerButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    lineHeight: 26,
-    fontWeight: 'bold',
   },
 
   alreadyRegisteredButton: {
