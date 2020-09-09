@@ -12,7 +12,7 @@ const Contact: React.FC = () => {
           <TouchableOpacity
             style={styles.contactItem}
             onPress={() => {
-              //TODO go to phone call
+              Linking.openURL('tel:+55 21 974.717.222');
             }}
           >
             <MaterialIcons name="phone" size={24} color="#CA53D7" />
@@ -22,7 +22,7 @@ const Contact: React.FC = () => {
           <TouchableOpacity
             style={styles.contactItem}
             onPress={() => {
-              //TODO go to phone call
+              Linking.openURL('tel:+55 48 996.344.072');
             }}
           >
             <MaterialIcons name="phone" size={24} color="#CA53D7" />
@@ -32,7 +32,7 @@ const Contact: React.FC = () => {
           <TouchableOpacity
             style={styles.contactItem}
             onPress={() => {
-              //TODO go to phone call
+              Linking.openURL('tel:+55 48 999.896.133');
             }}
           >
             <MaterialIcons name="phone" size={24} color="#CA53D7" />

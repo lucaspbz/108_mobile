@@ -39,7 +39,6 @@ const ConfirmedSelectedSchedule: React.FC = () => {
           width={24}
           fill={30}
           tintColor="#CA53D7"
-          onAnimationComplete={() => console.log('onAnimationComplete')}
           backgroundColor="rgba(223, 152, 231, 0.5)"
           style={{ position: 'absolute' }}
           lineCap="round"
@@ -48,6 +47,9 @@ const ConfirmedSelectedSchedule: React.FC = () => {
         <Image source={thanksImg} />
       </ProgressCircle>
 
+      {/* 
+          TODO make percentage dynamic
+        */}
       <Footer>
         Com a sua ajuda já chegamos a <TextBold>33%</TextBold> da nossa meta!
       </Footer>

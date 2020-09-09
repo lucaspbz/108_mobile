@@ -15,9 +15,9 @@ const Routes: React.FC = () => {
         <ActivityIndicator size="large" color="#999" />
       </View>
     );
+  } else {
+    return user ? <AppRoutes /> : <AuthRoutes />;
   }
-
-  return user ? <AppRoutes /> : <AuthRoutes />;
 };
 
 export default Routes;

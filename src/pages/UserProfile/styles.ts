@@ -1,108 +1,129 @@
-import { StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
+export const Container = styled.View`
+  flex: 1;
+  align-items: center;
+  background-color: #fff;
+`;
 
-  header: {
-    width: '100%',
-    marginBottom: 26,
-    marginTop: 26,
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
+export const Header = styled.View`
+  width: 100%;
+  margin-bottom: 26px;
+  margin-top: 26px;
+  align-items: center;
+  flex-direction: row;
+`;
 
-  goBackIcon: {
-    marginHorizontal: 24,
-  },
+export const UserName = styled.Text`
+  font-size: 16px;
+  line-height: 22px;
+  color: #333333;
+  font-weight: bold;
+  align-self: flex-end;
+  margin-right: 120px;
+  text-align: right;
+`;
 
-  userName: {
-    fontSize: 16,
-    lineHeight: 22,
-    color: '#333333',
-    fontWeight: 'bold',
-    alignSelf: 'flex-end',
-    marginRight: 120,
-    textAlign: 'right',
-  },
+export const List = styled.ScrollView`
+  width: 100%;
+  flex: 1px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+`;
 
-  description: {
-    alignSelf: 'flex-start',
-    marginLeft: 15,
-    marginTop: 35,
-    marginBottom: 20,
-    color: '#333333',
-    fontSize: 18,
-    lineHeight: 28,
-  },
+export const Description = styled.Text`
+  align-self: flex-start;
+  margin-left: 15px;
+  margin-top: 35px;
+  margin-bottom: 20px;
+  color: #333333;
+  font-size: 18px;
+  line-height: 28px;
+`;
 
-  list: {
-    width: '100%',
-    flex: 1,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-  },
+export const ItemCard = styled.View`
+  width: 328px;
+  background-color: #ededed;
+  border-radius: 15px;
+  margin-bottom: 24px;
+  align-self: center;
 
-  itemCard: {
-    width: 328,
-    height: 153,
-    backgroundColor: '#EDEDED',
-    borderRadius: 15,
-    marginBottom: 24,
-    alignSelf: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.25)',
-    shadowOffset: {
-      width: 0,
-      height: 9,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 12.35,
-    elevation: 19,
-  },
+  shadow-color: rgba(0, 0, 0, 0.25);
+  shadow-offset: {
+    width: 0px;
+    height: 9px;
+  }
+  shadow-opacity: 0.5px;
+  shadow-radius: 12.35px;
+  elevation: 19px;
+`;
 
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 16,
-  },
+export const DateContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-left: 16px;
+`;
 
-  date: {
-    marginTop: 16,
-    marginLeft: 16,
-    marginBottom: 16,
-    color: '#8739B3',
-    fontSize: 16,
-    lineHeight: 26,
-  },
+export const Date = styled.Text`
+  margin: 16px 0 16px 16px;
+  color: #8739b3;
+  font-size: 16px;
+  line-height: 26px;
+`;
 
-  itemLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginLeft: 32,
-    marginRight: 16,
-    marginBottom: 24,
-  },
+export const ItemLine = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 16px 24px 56px;
+`;
 
-  itemHour: {
-    color: '#333333',
-    fontSize: 16,
-    lineHeight: 19,
-  },
+export const ItemHour = styled.Text`
+  color: #333333;
+  font-size: 16px;
+  line-height: 19px;
+`;
 
-  logoutContainer: {
-    width: '100%',
-    marginTop: 16,
-  },
+export const LogoutContainer = styled.TouchableOpacity`
+  width: 100%;
+  margin-top: 16px;
+`;
 
-  logoutText: {
-    marginLeft: 16,
-    marginBottom: 56,
-    fontSize: 18,
-    lineHeight: 28,
-  },
-});
+export const LogoutText = styled.Text`
+  margin-left: 40px;
+  margin-bottom: 40px;
+  font-size: 18px;
+  line-height: 28px;
+`;
 
-export default styles;
+export const NoAppointmentsContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NoAppointmentsImage = styled.Image``;
+
+export const NoAppointmentsMainText = styled.Text`
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 28px;
+  margin: 32px 56px 0 56px;
+
+  text-align: center;
+
+  color: #333333;
+`;
+
+export const NoAppointmentsSmallText = styled.Text`
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 22px;
+
+  text-align: center;
+
+  color: #333333;
+`;

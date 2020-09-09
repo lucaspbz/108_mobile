@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text } from 'react-native';
 import { Picker } from '@react-native-community/picker';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/mobile';
+
+import Input from '../../components/Input';
 
 import Header from '../../components/Header';
 import api, { statesApi } from '../../services/api';
 import { userValidator } from '../../util/validators';
+import { useAuth } from '../../hooks/auth';
 
 import styles from './styles';
 
@@ -15,6 +20,7 @@ interface UserInterface {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
   address: {
     country: string;
     state?: string;
@@ -38,7 +44,8 @@ interface StatesRequestInterface {
 }
 
 const Register: React.FC = () => {
-  const navigate = useNavigation();
+  const formRef = useRef<FormHandles>();
+  const { signIn } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
   const [countries, setCountries] = useState<StatesInterface[]>([]);
@@ -49,11 +56,6 @@ const Register: React.FC = () => {
 
   const [cities, setCities] = useState<StatesInterface[]>([]);
   const [selectedCity, setSelectedCity] = useState('');
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
@@ -111,28 +113,17 @@ const Register: React.FC = () => {
     setSelectedCity(city);
   }
 
-  function handleNameChange(name: string) {
-    setName(name);
-  }
-
-  function handleEmailChange(email: string) {
-    setEmail(email);
-  }
-
-  function handlePasswordChange(password: string) {
-    setPassword(password);
-  }
-
-  function handleConfirmPasswordChange(confirmPassword: string) {
-    setConfirmPassword(confirmPassword);
-  }
-
-  function handleSubmitForm() {
+  function handleSubmitForm({
+    name,
+    password,
+    confirmPassword,
+    email,
+  }: UserInterface) {
     const user = {
       name,
-      email,
       password,
       confirmPassword,
+      email,
       address: {
         country: countries.find((country) => country.id === selectedCountry)
           ?.name,
@@ -142,7 +133,6 @@ const Register: React.FC = () => {
         city: selectedCity,
       },
     };
-
     userValidator
       .validate(user)
       .then((ok) => {
@@ -150,12 +140,11 @@ const Register: React.FC = () => {
           delete user.address.city;
           delete user.address.state;
         }
-
         api
           .post('/users', user)
           .then(({ status }) => {
             if (status === 200) {
-              navigate.navigate('Login');
+              signIn({ email, password });
             }
           })
           .catch((err) => {
@@ -170,66 +159,49 @@ const Register: React.FC = () => {
     <View style={styles.container}>
       <Header>Preencha as informações para finalizar seu cadastro</Header>
 
-      <View style={styles.loginForm}>
-        <View style={styles.formField}>
-          <Text style={styles.label}>Nome:</Text>
-          <TextInput
-            onChangeText={handleNameChange}
-            value={name}
-            returnKeyType="next"
-            autoCapitalize="words"
-            autoFocus
-            autoCompleteType="name"
-            textContentType="name"
-            placeholder="Seu nome aqui"
-            style={styles.genericField}
-          />
-        </View>
+      <Form ref={formRef} onSubmit={handleSubmitForm} style={styles.loginForm}>
+        <Input
+          name="name"
+          label="Nome"
+          placeholder="Seu nome aqui"
+          returnKeyType="next"
+          autoCapitalize="words"
+          autoCompleteType="name"
+          textContentType="name"
+          autoFocus
+        />
 
-        <View style={styles.formField}>
-          <Text style={styles.label}>E-mail:</Text>
-          <TextInput
-            onChangeText={handleEmailChange}
-            value={email}
-            keyboardType="email-address"
-            returnKeyType="next"
-            autoCapitalize="none"
-            enablesReturnKeyAutomatically
-            autoCompleteType="email"
-            textContentType="emailAddress"
-            placeholder="emaildousuario@usuario"
-            style={styles.genericField}
-          />
-        </View>
+        <Input
+          name="email"
+          label="E-mail"
+          keyboardType="email-address"
+          returnKeyType="next"
+          autoCapitalize="none"
+          enablesReturnKeyAutomatically
+          autoCompleteType="email"
+          textContentType="emailAddress"
+          placeholder="emaildousuario@usuario"
+        />
 
-        <View style={styles.formField}>
-          <Text style={styles.label}>Senha:</Text>
-          <TextInput
-            onChangeText={handlePasswordChange}
-            value={password}
-            placeholder="Digite uma senha"
-            returnKeyType="next"
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType="password"
-            style={styles.genericField}
-          />
-        </View>
+        <Input
+          name="password"
+          label="Senha"
+          placeholder="Digite uma senha"
+          returnKeyType="next"
+          secureTextEntry
+          autoCapitalize="none"
+          textContentType="password"
+        />
 
-        <View style={styles.formField}>
-          <Text style={styles.label}>Confirme sua senha:</Text>
-          <TextInput
-            onChangeText={handleConfirmPasswordChange}
-            value={confirmPassword}
-            placeholder="Confirme sua senha"
-            returnKeyType="next"
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType="password"
-            style={styles.genericField}
-            passwordRules=""
-          />
-        </View>
+        <Input
+          name="confirmPassword"
+          label="Confirme sua senha"
+          placeholder="Confirme sua senha"
+          returnKeyType="next"
+          secureTextEntry
+          autoCapitalize="none"
+          textContentType="password"
+        />
 
         <View style={styles.formFieldSelect}>
           <Text style={styles.label}>País:</Text>
@@ -278,10 +250,14 @@ const Register: React.FC = () => {
             </View>
           </>
         )}
-      </View>
+      </Form>
 
       <View style={styles.registerButton}>
-        <TouchableOpacity onPress={handleSubmitForm}>
+        <TouchableOpacity
+          onPress={() => {
+            formRef.current?.submitForm();
+          }}
+        >
           <Text style={styles.registerButtonText}> Finalizar cadastro </Text>
         </TouchableOpacity>
       </View>

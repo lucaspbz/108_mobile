@@ -1,8 +1,9 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { useAuth } from '../../hooks/auth';
+import { useSchedule } from '../../hooks/schedule';
 
 import Header from '../../components/Header';
 
@@ -11,16 +12,20 @@ import styles from './styles';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signIn } = useAuth();
 
-  const ref_input2 = useRef();
+  const { signIn } = useAuth();
+  const { updateAvailableTimes } = useSchedule();
+
+  const ref_input2 = useRef<HTMLInputElement>();
 
   const handleLogin = useCallback(async () => {
-    try {
-      await signIn({ email, password });
-    } catch (error) {
-      console.log(error.message);
-    }
+    signIn({ email, password })
+      .then((response) => updateAvailableTimes())
+      .catch((error) => {
+        if (error.message === 'Request failed with status code 401') {
+          Alert.alert('Email ou senha incorretos!');
+        }
+      });
   }, [email, password]);
 
   const handleEmailChange = useCallback(
@@ -46,7 +51,7 @@ const Login: React.FC = () => {
           <Text style={styles.label}>E-mail:</Text>
           <TextInput
             onSubmitEditing={() => {
-              ref_input2.current.focus();
+              ref_input2.current?.focus();
             }}
             returnKeyType="next"
             autoCapitalize="none"

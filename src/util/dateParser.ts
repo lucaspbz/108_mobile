@@ -19,6 +19,10 @@ export interface MappedScheduleInterface {
 }
 
 export function groupByDates({ data }: GroupByDatesParams) {
+  if (data.length === 1) {
+    return [{ day: parseISO(data[0]), times: [data[0]] }];
+  }
+
   const start = parseISO(data[0]);
   const end = parseISO(data[data.length - 1]);
 
@@ -40,7 +44,7 @@ export function groupByDates({ data }: GroupByDatesParams) {
 }
 
 export function formatToDayString({ day }: FormatToDayStringParams) {
-  return format(day, 'eeee, dd/LL', {
+  return format(day, 'iiii, dd/LL', {
     locale: ptBR,
   });
 }

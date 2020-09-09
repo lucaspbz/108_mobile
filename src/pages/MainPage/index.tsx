@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 
 import AuthenticatedHeader from '../../components/AuthenticatedHeader';
@@ -10,21 +10,10 @@ import WhoWeAre from '../../components/WhoWeAre';
 import Contact from '../../components/Contact';
 
 import styles from './styles';
-import api from '../../services/api';
-import { groupByDates, MappedScheduleInterface } from '../../util/dateParser';
 
 const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('AvailableSchedule');
-  // const [availableAppointments, setAvailableAppointments] = useState<
-  //   MappedScheduleInterface[]
-  // >([]);
 
-  // useEffect(() => {
-  //   api.get('/appointments/available').then(({ data }) => {
-  //     const groupedSchedule = groupByDates({ data });
-  //     setAvailableAppointments(groupedSchedule);
-  //   });
-  // }, []);
   return (
     <View style={styles.container}>
       <AuthenticatedHeader />

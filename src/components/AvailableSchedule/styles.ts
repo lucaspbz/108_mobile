@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
 
   itemTitle: {
-    marginLeft: 32,
+    marginLeft: 8,
     color: '#333333',
     fontWeight: 'bold',
     fontSize: 18,
@@ -66,6 +66,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     lineHeight: 26,
+  },
+
+  dayTitleContainer: {
+    flexDirection: 'row',
+    marginLeft: 32,
+    marginVertical: 8,
   },
 });
 

@@ -8,11 +8,13 @@ import React, {
 
 import api from '../services/api';
 import { groupByDates, MappedScheduleInterface } from '../util/dateParser';
+import { Alert } from 'react-native';
 
 interface ScheduleContextData {
   availableSchedule: MappedScheduleInterface[];
   toggleSelectedIcon(time: string): void;
   selectedTimes: string[];
+  updateAvailableTimes(): void;
 }
 
 const ScheduleContext = createContext<ScheduleContextData>(
@@ -23,16 +25,8 @@ const ScheduleProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<MappedScheduleInterface[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    api.get('/appointments/available').then(({ data }) => {
-      const groupedSchedule = groupByDates({ data });
-      setData(groupedSchedule);
-    });
-
-    setData(data);
-    setLoading(false);
+    updateAvailableTimes();
   }, []);
 
   const toggleSelectedIcon = useCallback(
@@ -50,9 +44,28 @@ const ScheduleProvider: React.FC = ({ children }) => {
     },
     [selectedTimes]
   );
+
+  const updateAvailableTimes = useCallback(() => {
+    api
+      .get('/appointments/available')
+      .then(({ data }) => {
+        const groupedSchedule = groupByDates({ data });
+        setData(groupedSchedule);
+      })
+      .catch(() => {
+        Alert.alert('Something went very wrong!');
+      });
+
+    setData(data);
+  }, []);
   return (
     <ScheduleContext.Provider
-      value={{ availableSchedule: data, toggleSelectedIcon, selectedTimes }}
+      value={{
+        availableSchedule: data,
+        toggleSelectedIcon,
+        selectedTimes,
+        updateAvailableTimes,
+      }}
     >
       {children}
     </ScheduleContext.Provider>

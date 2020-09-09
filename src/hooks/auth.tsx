@@ -11,7 +11,13 @@ import api from '../services/api';
 
 interface AuthState {
   token: string;
-  user: object;
+  user: {
+    name: string;
+    email: string;
+    id: string;
+    created_at: string;
+    updated_at: string;
+  } | null;
 }
 
 interface SigniInCredentials {
@@ -20,13 +26,14 @@ interface SigniInCredentials {
 }
 
 interface AuthContextData {
-  user: {
+  user: null | {
     name: string;
     email: string;
     id: string;
     created_at: string;
     updated_at: string;
   };
+  token: string;
   loading: boolean;
   signIn(credentials: SigniInCredentials): Promise<void>;
   signOut(): void;
@@ -47,6 +54,11 @@ const AuthProvider: React.FC = ({ children }) => {
 
       if (token[1] && user[1]) {
         setData({ token: token[1], user: JSON.parse(user[1]) });
+        api.defaults.headers.authorization = `Bearer ${token}`;
+
+        setLoading(false);
+      } else {
+        setData({ token: '', user: null });
         setLoading(false);
       }
     }
@@ -64,6 +76,8 @@ const AuthProvider: React.FC = ({ children }) => {
       ['@108hours:user', JSON.stringify(user)],
     ]);
 
+    api.defaults.headers.authorization = `Bearer ${token}`;
+
     setData({ token, user });
   }, []);
 
@@ -74,7 +88,9 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: data.user, loading, signIn, signOut, token: data.token }}
+    >
       {children}
     </AuthContext.Provider>
   );
