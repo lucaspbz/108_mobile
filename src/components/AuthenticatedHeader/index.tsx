@@ -18,7 +18,7 @@ const AuthenticatedHeader: React.FC = () => {
   return (
     <View style={styles.header}>
       <RectButton style={styles.userName} onPress={handleNavigateToProfile}>
-        <Text style={styles.userNameText}>{user.name}</Text>
+        <Text style={styles.userNameText}>{user?.name}</Text>
       </RectButton>
 
       <Text style={styles.title}>108 horas orando com a Mãe Divina</Text>

@@ -21,21 +21,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  emailField: {
+  genericField: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     height: 25,
     marginTop: 8,
     fontSize: 14,
     lineHeight: 28,
-  },
-
-  passwordField: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
-    height: 25,
-    marginTop: 8,
-    fontSize: 14,
   },
 });
 

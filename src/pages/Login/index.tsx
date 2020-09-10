@@ -1,5 +1,5 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { Alert, SafeAreaView } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import { Alert, SafeAreaView, TextInput } from 'react-native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 
@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   const { signIn } = useAuth();
   const { updateAvailableTimes } = useSchedule();
 
-  const ref_input2 = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<TextInput>(null);
   const formRef = useRef<FormHandles>(null);
 
   const handleLogin = useCallback(async ({ email, password }) => {
@@ -35,15 +35,20 @@ const Login: React.FC = () => {
 
       <Form ref={formRef} style={styles.loginForm} onSubmit={handleLogin}>
         <Input
+          style={styles.genericField}
           label="E-mail"
           name="email"
           placeholder="emaildousuario@usuario"
+          autoCorrect={false}
           returnKeyType="next"
           autoCapitalize="none"
           enablesReturnKeyAutomatically
           autoFocus
           autoCompleteType="email"
           textContentType="emailAddress"
+          onSubmitEditing={() => {
+            passwordInputRef.current?.focus();
+          }}
         />
 
         <Input
@@ -52,8 +57,11 @@ const Login: React.FC = () => {
           secureTextEntry
           autoCapitalize="none"
           textContentType="password"
-          style={styles.passwordField}
-          ref={ref_input2}
+          style={styles.genericField}
+          ref={passwordInputRef}
+          onSubmitEditing={() => {
+            formRef.current?.submitForm();
+          }}
         />
       </Form>
 

@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-community/picker';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
+import * as Yup from 'yup';
 
 import Input from '../../components/Input';
 
 import Header from '../../components/Header';
 import api, { statesApi } from '../../services/api';
 import { userValidator } from '../../util/validators';
+import getValidationErrors from '../../util/getValidationErrors';
 import { useAuth } from '../../hooks/auth';
 
 import styles from './styles';
@@ -45,7 +45,7 @@ interface StatesRequestInterface {
 }
 
 const Register: React.FC = () => {
-  const formRef = useRef<FormHandles>();
+  const formRef = useRef<FormHandles>(null);
   const { signIn } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -114,7 +114,7 @@ const Register: React.FC = () => {
     setSelectedCity(city);
   }
 
-  function handleSubmitForm({
+  async function handleSubmitForm({
     name,
     password,
     confirmPassword,
@@ -134,124 +134,149 @@ const Register: React.FC = () => {
         city: selectedCity,
       },
     };
-    userValidator
-      .validate(user)
-      .then((ok) => {
-        if (user.address.country !== 'Brasil') {
-          delete user.address.city;
-          delete user.address.state;
+
+    try {
+      formRef.current?.setErrors({});
+      await userValidator.validate(user, { abortEarly: false });
+      if (user.address.country !== 'Brasil') {
+        delete user.address.city;
+        delete user.address.state;
+      }
+      api.post('/users', user).then(({ status }) => {
+        if (status === 200) {
+          Alert.alert(
+            'Cadastro realizado com sucesso!',
+            'Você será redirecionado para a página principal.'
+          );
+          signIn({ email, password });
         }
-        api
-          .post('/users', user)
-          .then(({ status }) => {
-            if (status === 200) {
-              signIn({ email, password });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
       });
+    } catch (err) {
+      console.log(err);
+
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err);
+
+        formRef.current?.setErrors(errors);
+      }
+    }
+
+    // userValidator
+    //   .validate(user)
+    //   .then((ok) => {
+    //     if (user.address.country !== 'Brasil') {
+    //       delete user.address.city;
+    //       delete user.address.state;
+    //     }
+    //     api
+    //       .post('/users', user)
+    //       .then(({ status }) => {
+    //         if (status === 200) {
+    //           signIn({ email, password });
+    //         }
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //       });
+    //   })
+    //   .catch((err) => {});
   }
   return (
     <View style={styles.container}>
       <Header>Preencha as informações para finalizar seu cadastro</Header>
 
       <Form ref={formRef} onSubmit={handleSubmitForm} style={styles.loginForm}>
-        <Input
-          name="name"
-          label="Nome"
-          placeholder="Seu nome aqui"
-          returnKeyType="next"
-          autoCapitalize="words"
-          autoCompleteType="name"
-          textContentType="name"
-          autoFocus
-        />
+        <ScrollView>
+          <Input
+            name="name"
+            label="Nome"
+            placeholder="Seu nome aqui"
+            returnKeyType="next"
+            autoCapitalize="words"
+            autoCompleteType="name"
+            textContentType="name"
+            autoFocus
+          />
 
-        <Input
-          autoCorrect={false}
-          name="email"
-          label="E-mail"
-          keyboardType="email-address"
-          returnKeyType="next"
-          autoCapitalize="none"
-          enablesReturnKeyAutomatically
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          placeholder="emaildousuario@usuario"
-        />
+          <Input
+            autoCorrect={false}
+            name="email"
+            label="E-mail"
+            keyboardType="email-address"
+            returnKeyType="next"
+            autoCapitalize="none"
+            enablesReturnKeyAutomatically
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            placeholder="emaildousuario@usuario"
+          />
 
-        <Input
-          name="password"
-          label="Senha"
-          placeholder="Digite uma senha"
-          returnKeyType="next"
-          secureTextEntry
-          autoCapitalize="none"
-          textContentType="password"
-        />
+          <Input
+            name="password"
+            label="Senha"
+            placeholder="Digite uma senha"
+            returnKeyType="next"
+            secureTextEntry
+            autoCapitalize="none"
+            textContentType="password"
+          />
 
-        <Input
-          name="confirmPassword"
-          label="Confirme sua senha"
-          placeholder="Confirme sua senha"
-          returnKeyType="next"
-          secureTextEntry
-          autoCapitalize="none"
-          textContentType="password"
-        />
+          <Input
+            name="confirmPassword"
+            label="Confirme sua senha"
+            placeholder="Confirme sua senha"
+            returnKeyType="next"
+            secureTextEntry
+            autoCapitalize="none"
+            textContentType="password"
+          />
 
-        <View style={styles.formFieldSelect}>
-          <Text style={styles.label}>País:</Text>
-          <Picker
-            style={styles.picker}
-            prompt="Selecione uma opção"
-            selectedValue={selectedCountry}
-            onValueChange={(country) => {
-              handleSelectCountry(country);
-            }}
-          >
-            {!isLoading &&
-              countries.map(({ name, id }) => (
-                <Picker.Item key={id} label={name} value={id} />
-              ))}
-          </Picker>
-        </View>
-        {selectedCountry === 'BRA' && !isLoading && (
-          <>
-            <View style={styles.formFieldSelect}>
-              <Text style={styles.label}>Estado:</Text>
-              <Picker
-                style={styles.picker}
-                prompt="Selecione uma opção"
-                selectedValue={selectedState}
-                onValueChange={handleSelectState}
-              >
-                {states.map(({ id, name }) => (
+          <View style={styles.formFieldSelect}>
+            <Text style={styles.label}>País:</Text>
+            <Picker
+              style={styles.picker}
+              prompt="Selecione uma opção"
+              selectedValue={selectedCountry}
+              onValueChange={handleSelectCountry}
+            >
+              {!isLoading &&
+                countries.map(({ name, id }) => (
                   <Picker.Item key={id} label={name} value={id} />
                 ))}
-              </Picker>
-            </View>
+            </Picker>
+          </View>
+          {selectedCountry === 'BRA' && !isLoading && (
+            <>
+              <View style={styles.formFieldSelect}>
+                <Text style={styles.label}>Estado:</Text>
+                <Picker
+                  style={styles.picker}
+                  prompt="Selecione uma opção"
+                  selectedValue={selectedState}
+                  onValueChange={handleSelectState}
+                >
+                  {states.map(({ id, name }) => (
+                    <Picker.Item key={id} label={name} value={id} />
+                  ))}
+                </Picker>
+              </View>
 
-            <View style={styles.formFieldSelect}>
-              <Text style={styles.label}>Cidade:</Text>
-              <Picker
-                style={styles.picker}
-                prompt="Selecione uma opção"
-                selectedValue={selectedCity}
-                onValueChange={handleSelectCity}
-              >
-                {cities.map(({ id, name }) => (
-                  <Picker.Item label={name} value={name} key={id} />
-                ))}
-              </Picker>
-            </View>
-          </>
-        )}
+              <View style={styles.formFieldSelect}>
+                <Text style={styles.label}>Cidade:</Text>
+                <Picker
+                  style={styles.picker}
+                  prompt="Selecione uma opção"
+                  selectedValue={selectedCity}
+                  onValueChange={handleSelectCity}
+                >
+                  {cities.map(({ id, name }) => (
+                    <Picker.Item label={name} value={name} key={id} />
+                  ))}
+                </Picker>
+              </View>
+            </>
+          )}
+        </ScrollView>
       </Form>
 
       <Button
