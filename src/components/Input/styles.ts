@@ -18,7 +18,7 @@ export const Label = styled.Text`
 
 export const TextInput = styled.TextInput<TextInputProps>`
   border-bottom-width: 0.5px;
-  border-bottom-color: 'rgba(51, 51, 51, 0.2)';
+  border-bottom-color: rgba(51, 51, 51, 0.2);
   flex: 1;
   margin: 8px 16px;
   max-width: 230px;
@@ -27,5 +27,6 @@ export const TextInput = styled.TextInput<TextInputProps>`
     props.isErrored &&
     css`
       color: #c53030;
+      border-bottom-color: #c53030;
     `}
 `;

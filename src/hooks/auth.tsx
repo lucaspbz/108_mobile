@@ -4,10 +4,10 @@ import React, {
   useState,
   useContext,
   useEffect,
-} from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
+} from "react";
+import AsyncStorage from "@react-native-community/async-storage";
 
-import api from '../services/api';
+import api from "../services/api";
 
 interface AuthState {
   token: string;
@@ -48,17 +48,17 @@ const AuthProvider: React.FC = ({ children }) => {
   useEffect(() => {
     async function loadStoragedData() {
       const [token, user] = await AsyncStorage.multiGet([
-        '@108hours:token',
-        '@108hours:user',
+        "@108hours:token",
+        "@108hours:user",
       ]);
 
       if (token[1] && user[1]) {
         setData({ token: token[1], user: JSON.parse(user[1]) });
-        api.defaults.headers.authorization = `Bearer ${token}`;
+        api.defaults.headers.authorization = `Bearer ${token[1]}`;
 
         setLoading(false);
       } else {
-        setData({ token: '', user: null });
+        setData({ token: "", user: null });
         setLoading(false);
       }
     }
@@ -67,13 +67,13 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signIn = useCallback(async ({ email, password }) => {
-    const response = await api.post('/sessions', { email, password });
+    const response = await api.post("/sessions", { email, password });
 
     const { token, user } = response.data;
 
     await AsyncStorage.multiSet([
-      ['@108hours:token', token],
-      ['@108hours:user', JSON.stringify(user)],
+      ["@108hours:token", token],
+      ["@108hours:user", JSON.stringify(user)],
     ]);
 
     api.defaults.headers.authorization = `Bearer ${token}`;
@@ -82,7 +82,7 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(async () => {
-    await AsyncStorage.multiRemove(['@108hours:token', '@108hours:user']);
+    await AsyncStorage.multiRemove(["@108hours:token", "@108hours:user"]);
 
     setData({} as AuthState);
   }, []);
@@ -100,7 +100,7 @@ function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
   return context;

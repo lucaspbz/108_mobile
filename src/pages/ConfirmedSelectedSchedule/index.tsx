@@ -47,9 +47,7 @@ const ConfirmedSelectedSchedule: React.FC = () => {
         <Image source={thanksImg} />
       </ProgressCircle>
 
-      {/* 
-          TODO make percentage dynamic
-        */}
+      {/*   TODO make percentage dynamic       */}
       <Footer>
         Com a sua ajuda já chegamos a <TextBold>33%</TextBold> da nossa meta!
       </Footer>

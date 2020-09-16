@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 18 + Constants.statusBarHeight,
     right: 18,
+    flexDirection: 'row',
   },
 
   userNameText: {
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 14,
     textAlign: 'right',
+    marginRight: 8,
   },
 
   title: {

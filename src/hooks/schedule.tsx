@@ -4,11 +4,13 @@ import React, {
   useState,
   useContext,
   useEffect,
-} from 'react';
+} from "react";
 
-import api from '../services/api';
-import { groupByDates, MappedScheduleInterface } from '../util/dateParser';
-import { Alert } from 'react-native';
+import api from "../services/api";
+import socket from "../services/socket";
+
+import { groupByDates, MappedScheduleInterface } from "../util/dateParser";
+import { Alert } from "react-native";
 
 interface ScheduleContextData {
   availableSchedule: MappedScheduleInterface[];
@@ -26,8 +28,12 @@ const ScheduleProvider: React.FC = ({ children }) => {
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
 
   useEffect(() => {
+    socket.on("newAppointments", (appointments: string[]) => {
+      const groupedSchedule = groupByDates({ data: appointments });
+      setData(groupedSchedule);
+    });
     updateAvailableTimes();
-  }, []);
+  }, [socket]);
 
   const toggleSelectedIcon = useCallback(
     (time: string) => {
@@ -47,13 +53,13 @@ const ScheduleProvider: React.FC = ({ children }) => {
 
   const updateAvailableTimes = useCallback(() => {
     api
-      .get('/appointments/available')
+      .get("/appointments/available")
       .then(({ data }) => {
         const groupedSchedule = groupByDates({ data });
         setData(groupedSchedule);
       })
       .catch(() => {
-        Alert.alert('Something went very wrong!');
+        Alert.alert("Something went very wrong!");
       });
 
     setData(data);
@@ -76,7 +82,7 @@ function useSchedule(): ScheduleContextData {
   const context = useContext(ScheduleContext);
 
   if (!context) {
-    throw new Error('useSchedule must be used within an ScheduleProvider');
+    throw new Error("useSchedule must be used within an ScheduleProvider");
   }
 
   return context;

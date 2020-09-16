@@ -1,7 +1,10 @@
 import * as yup from 'yup';
 
 export const userValidator = yup.object().shape({
-  name: yup.string().min(3).required('Nome obrigatório'),
+  name: yup
+    .string()
+    .min(3, 'Nome deve ter no mínimo 3 caracteres.')
+    .required('Nome obrigatório'),
 
   email: yup
     .string()

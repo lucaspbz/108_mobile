@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { AxiosResponse } from 'axios';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { AxiosResponse } from "axios";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { useSchedule } from '../../hooks/schedule';
-import { useAuth } from '../../hooks/auth';
+import { useSchedule } from "../../hooks/schedule";
+import { useAuth } from "../../hooks/auth";
 
-import { formatToDayString, formatToHour } from '../../util/dateParser';
+import { formatToDayString, formatToHour } from "../../util/dateParser";
 
-import styles from './styles';
-import api from '../../services/api';
-import Button from '../Button';
+import styles from "./styles";
+import api from "../../services/api";
+import Button from "../Button";
 
 const AvailableSchedule: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -22,6 +22,7 @@ const AvailableSchedule: React.FC = () => {
     selectedTimes,
     updateAvailableTimes,
   } = useSchedule();
+
   const { user } = useAuth();
 
   function handlePressTimeItem(time: string) {
@@ -32,7 +33,7 @@ const AvailableSchedule: React.FC = () => {
     const promises: Promise<AxiosResponse>[] = [];
 
     selectedTimes.forEach((time) => {
-      const newPromise = api.post('/appointments', {
+      const newPromise = api.post("/appointments", {
         date: time,
         user_id: user?.id,
       });
@@ -42,10 +43,10 @@ const AvailableSchedule: React.FC = () => {
     Promise.all(promises)
       .then(() => {
         updateAvailableTimes();
-        navigation.navigate('ConfirmedSelectedSchedule');
+        navigation.navigate("ConfirmedSelectedSchedule");
       })
       .catch(() => {
-        console.log('Something went wront!');
+        console.log("Something went wront!");
         //TODO error handling
       });
   }
@@ -111,6 +112,7 @@ const AvailableSchedule: React.FC = () => {
           );
         }}
       ></FlatList>
+      {/* TODO corrigir bug de layout do botao ao recarregar a pagina*/}
       <View style={{ height: 100 }}>
         {selectedTimes.length > 0 && (
           <Button

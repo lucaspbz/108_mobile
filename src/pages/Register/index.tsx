@@ -152,9 +152,13 @@ const Register: React.FC = () => {
         }
       });
     } catch (err) {
-      console.log(err);
-
       if (err instanceof Yup.ValidationError) {
+        console.log(err.inner);
+
+        Alert.alert(
+          'Erro:',
+          'Algo deu errado, por favor confira os dados inseridos.'
+        );
         const errors = getValidationErrors(err);
 
         formRef.current?.setErrors(errors);
