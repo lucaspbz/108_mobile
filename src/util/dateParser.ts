@@ -4,8 +4,8 @@ import {
   isSameDay,
   format,
   getDay,
-} from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+} from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface GroupByDatesParams {
   data: string[];
@@ -34,13 +34,13 @@ export interface MappedScheduleWithIdInterface {
 }
 
 const week = [
-  'Domingo',
-  'Segunda-Feira',
-  'Terça-Feira',
-  'Quarta-Feira',
-  'Quinta-Feira',
-  'Sexta-Feira',
-  'Sábado',
+  "Domingo",
+  "Segunda-Feira",
+  "Terça-Feira",
+  "Quarta-Feira",
+  "Quinta-Feira",
+  "Sexta-Feira",
+  "Sábado",
 ];
 
 export function groupByDates({ data }: GroupByDatesParams) {
@@ -73,39 +73,39 @@ export function groupByDatesWithId({ schedule }: GroupByDatesWithIdParams) {
     return [
       {
         day: parseISO(schedule[0].date),
-        times: [{ date: schedule[0].date, id: schedule[0].id }],
+        times: [{ time: schedule[0].date, id: schedule[0].id }],
       },
     ];
-  }
+  } else {
+    const start = parseISO(schedule[0].date);
+    const end = parseISO(schedule[schedule.length - 1].date);
 
-  const start = parseISO(schedule[0].date);
-  const end = parseISO(schedule[schedule.length - 1].date);
+    const days = eachDayOfInterval({ start, end });
 
-  const days = eachDayOfInterval({ start, end });
-
-  const mappedSchedule: MappedScheduleWithIdInterface[] = days.map((day) => {
-    return { day, times: [] };
-  });
-
-  mappedSchedule.map(({ day, times }) => {
-    schedule.forEach((time) => {
-      if (isSameDay(day, parseISO(time.date))) {
-        times.push({ time: time.date, id: time.id });
-      }
+    const mappedSchedule: MappedScheduleWithIdInterface[] = days.map((day) => {
+      return { day, times: [] };
     });
-  });
 
-  return mappedSchedule;
+    mappedSchedule.map(({ day, times }) => {
+      schedule.forEach((time) => {
+        if (isSameDay(day, parseISO(time.date))) {
+          times.push({ time: time.date, id: time.id });
+        }
+      });
+    });
+
+    return mappedSchedule;
+  }
 }
 
 groupByDatesWithId;
 
 export function formatToDayString({ day }: FormatToDayStringParams) {
-  return `${week[getDay(day)]}, ${format(day, 'dd/LL', {
+  return `${week[getDay(day)]}, ${format(day, "dd/LL", {
     locale: ptBR,
   })}`;
 }
 
 export function formatToHour({ time }: FormatToHourParams) {
-  return format(parseISO(time), 'HH:mm');
+  return format(parseISO(time), "HH:mm");
 }

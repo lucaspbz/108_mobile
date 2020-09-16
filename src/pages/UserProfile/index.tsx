@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { TouchableOpacity, Alert } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from "react";
+import { TouchableOpacity, Alert } from "react-native";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-import Modal from '../../components/Modal';
+import Modal from "../../components/Modal";
 
-import FrameImg from '../../assets/Frame.png';
+import FrameImg from "../../assets/Frame.png";
 
-import { useAuth } from '../../hooks/auth';
+import { useAuth } from "../../hooks/auth";
 
 import {
   groupByDatesWithId,
   MappedScheduleWithIdInterface,
   formatToDayString,
   formatToHour,
-} from '../../util/dateParser';
+} from "../../util/dateParser";
 
 import {
   Container,
@@ -33,8 +33,8 @@ import {
   NoAppointmentsImage,
   NoAppointmentsMainText,
   NoAppointmentsSmallText,
-} from './styles';
-import api from '../../services/api';
+} from "./styles";
+import api from "../../services/api";
 
 const UserProfile: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -93,7 +93,7 @@ const UserProfile: React.FC = () => {
         })
         .catch(() => {
           setModalVisible(false);
-          Alert.alert('Parece que algo deu errado :(');
+          Alert.alert("Parece que algo deu errado :(");
         });
     },
     [timeToBeDeleted]
@@ -132,32 +132,40 @@ const UserProfile: React.FC = () => {
       {appointments && (
         <List>
           <Description>Meus horários:</Description>
-          {appointments.map(({ day, times }) => (
-            <ItemCard key={day.toString()}>
-              <DateContainer>
-                <MaterialCommunityIcons
-                  name="calendar-blank"
-                  size={24}
-                  color="#8739B3"
-                />
-                <Date>{formatToDayString({ day })}:</Date>
-              </DateContainer>
+          {appointments.map(({ day, times }) => {
+            if (times.length > 0) {
+              return (
+                <ItemCard key={day.toString()}>
+                  <DateContainer>
+                    <MaterialCommunityIcons
+                      name="calendar-blank"
+                      size={24}
+                      color="#8739B3"
+                    />
+                    <Date>{formatToDayString({ day })}:</Date>
+                  </DateContainer>
 
-              {times.map(({ time, id }) => (
-                <ItemLine key={id}>
-                  <ItemHour>{formatToHour({ time })}</ItemHour>
-                  <TouchableOpacity
-                    style={{ marginRight: 24 }}
-                    onPress={() => {
-                      handleOpenDeleteModal(time, id);
-                    }}
-                  >
-                    <MaterialIcons name="delete" size={24} color="#CA53D7" />
-                  </TouchableOpacity>
-                </ItemLine>
-              ))}
-            </ItemCard>
-          ))}
+                  {times.map(({ time, id }) => (
+                    <ItemLine key={id}>
+                      <ItemHour>{formatToHour({ time })}</ItemHour>
+                      <TouchableOpacity
+                        style={{ marginRight: 24 }}
+                        onPress={() => {
+                          handleOpenDeleteModal(time, id);
+                        }}
+                      >
+                        <MaterialIcons
+                          name="delete"
+                          size={24}
+                          color="#CA53D7"
+                        />
+                      </TouchableOpacity>
+                    </ItemLine>
+                  ))}
+                </ItemCard>
+              );
+            }
+          })}
         </List>
       )}
 

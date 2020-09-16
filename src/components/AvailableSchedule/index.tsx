@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { AxiosResponse } from "axios";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -14,7 +14,6 @@ import api from "../../services/api";
 import Button from "../Button";
 
 const AvailableSchedule: React.FC = () => {
-  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const {
     availableSchedule: mappedSchedule,
@@ -23,11 +22,15 @@ const AvailableSchedule: React.FC = () => {
     updateAvailableTimes,
   } = useSchedule();
 
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   function handlePressTimeItem(time: string) {
     toggleSelectedIcon(time);
   }
+
+  useEffect(() => {
+    updateAvailableTimes();
+  }, []);
 
   function handleConfirmSelectedTimes() {
     const promises: Promise<AxiosResponse>[] = [];
@@ -45,21 +48,27 @@ const AvailableSchedule: React.FC = () => {
         updateAvailableTimes();
         navigation.navigate("ConfirmedSelectedSchedule");
       })
-      .catch(() => {
-        console.log("Something went wront!");
-        //TODO error handling
+      .catch((err) => {
+        if (err.response.data.message === "Invalid JWT token") {
+          Alert.alert(
+            "Error:",
+            "Ops, parece que sua sessão expirou! Favor fazer login novamente."
+          );
+          signOut();
+        }
+        if (err.response.data.message === "JWT token is missing") {
+          Alert.alert(
+            "Error:",
+            "Ops, algo deu errado! Favor fazer login novamente."
+          );
+          signOut();
+        }
       });
   }
 
   return (
     <View style={styles.container}>
       <FlatList
-        onRefresh={async () => {
-          setRefreshing(true);
-          updateAvailableTimes();
-          setRefreshing(false);
-        }}
-        refreshing={refreshing}
         data={mappedSchedule}
         keyExtractor={({ day }) => day.toString()}
         renderItem={({ item: { day, times } }) => {
@@ -112,7 +121,6 @@ const AvailableSchedule: React.FC = () => {
           );
         }}
       ></FlatList>
-      {/* TODO corrigir bug de layout do botao ao recarregar a pagina*/}
       <View style={{ height: 100 }}>
         {selectedTimes.length > 0 && (
           <Button
