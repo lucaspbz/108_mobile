@@ -6,7 +6,6 @@ interface TextInputProps {
 
 export const Container = styled.View`
   margin-bottom: 24px;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   margin-right: 24px;
@@ -23,7 +22,7 @@ export const TextInput = styled.TextInput<TextInputProps>`
   margin: 8px 16px;
   max-width: 230px;
 
-  ${(props) =>
+  ${props =>
     props.isErrored &&
     css`
       color: #c53030;

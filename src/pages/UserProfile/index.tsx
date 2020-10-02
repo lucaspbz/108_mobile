@@ -54,7 +54,7 @@ const UserProfile: React.FC = () => {
   const loadUserData = useCallback(() => {
     api.get(`/users/${user?.id}`).then(({ data }) => {
       try {
-        const filteredAppointments = data.appointments.map(
+        const filteredAppointments = data.user.appointments.map(
           (item: { date: string; id: string }) => ({
             date: item.date,
             id: item.id,

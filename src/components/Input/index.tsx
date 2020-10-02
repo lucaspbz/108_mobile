@@ -24,7 +24,7 @@ interface InputRef {
 
 const Input: React.RefForwardingComponent<InputRef, InputProps> = (
   { name, label, ...rest },
-  ref
+  ref,
 ) => {
   const inputElementRef = useRef<any>(null);
 
@@ -52,7 +52,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
         ref={inputElementRef}
         defaultValue={defaultValue}
         {...rest}
-        onChangeText={(value) => (inputValueRef.current.value = value)}
+        onChangeText={value => (inputValueRef.current.value = value)}
       />
     </Container>
   );

@@ -5,10 +5,12 @@ import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../../hooks/auth';
+import { useSchedule } from '../../hooks/schedule';
 
 import styles from './styles';
 
 const AuthenticatedHeader: React.FC = () => {
+  const { activePeriod } = useSchedule()
   const { user } = useAuth();
   const navigate = useNavigation();
 
@@ -24,7 +26,7 @@ const AuthenticatedHeader: React.FC = () => {
       </RectButton>
 
       <Text style={styles.title}>108 horas orando com a Mãe Divina</Text>
-      <Text style={styles.subtitle}>12 a 16 de Outubro de 2020</Text>
+      <Text style={styles.subtitle}>{activePeriod}</Text>
     </View>
   );
 };

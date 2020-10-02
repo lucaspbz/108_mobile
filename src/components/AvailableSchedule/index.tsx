@@ -22,7 +22,7 @@ const AvailableSchedule: React.FC = () => {
     updateAvailableTimes,
   } = useSchedule();
 
-  const { user, signOut } = useAuth();
+  const { signOut } = useAuth();
 
   function handlePressTimeItem(time: string) {
     toggleSelectedIcon(time);
@@ -38,7 +38,6 @@ const AvailableSchedule: React.FC = () => {
     selectedTimes.forEach((time) => {
       const newPromise = api.post("/appointments", {
         date: time,
-        user_id: user?.id,
       });
       promises.push(newPromise);
     });

@@ -67,7 +67,7 @@ const Register: React.FC = () => {
             name: translations.br,
             id: alpha3Code,
           };
-        }
+        },
       );
 
       setIsLoading(false);
@@ -100,18 +100,15 @@ const Register: React.FC = () => {
   }, [selectedState]);
 
   function handleSelectCountry(country: React.ReactText) {
-    country = country.toString();
-    setSelectedCountry(country);
+    setSelectedCountry(country.toString());
   }
 
   function handleSelectState(state: React.ReactText) {
-    state = Number(state.toString());
-    setSelectedState(state);
+    setSelectedState(Number(state.toString()));
   }
 
   function handleSelectCity(city: React.ReactText) {
-    city = city.toString();
-    setSelectedCity(city);
+    setSelectedCity(city.toString());
   }
 
   async function handleSubmitForm({
@@ -126,9 +123,9 @@ const Register: React.FC = () => {
       confirmPassword,
       email,
       address: {
-        country: countries.find((country) => country.id === selectedCountry)
+        country: countries.find(country => country.id === selectedCountry)
           ?.name,
-        state: states.find((state) => {
+        state: states.find(state => {
           return Number(state.id) === selectedState;
         })?.name,
         city: selectedCity,
@@ -139,14 +136,14 @@ const Register: React.FC = () => {
       formRef.current?.setErrors({});
       await userValidator.validate(user, { abortEarly: false });
       if (user.address.country !== 'Brasil') {
-        delete user.address.city;
-        delete user.address.state;
+        user.address.city = '';
+        user.address.state = '';
       }
       api.post('/users', user).then(({ status }) => {
         if (status === 200) {
           Alert.alert(
             'Cadastro realizado com sucesso!',
-            'Você será redirecionado para a página principal.'
+            'Você será redirecionado para a página principal.',
           );
           signIn({ email, password });
         }
@@ -157,7 +154,7 @@ const Register: React.FC = () => {
 
         Alert.alert(
           'Erro:',
-          'Algo deu errado, por favor confira os dados inseridos.'
+          'Algo deu errado, por favor confira os dados inseridos.',
         );
         const errors = getValidationErrors(err);
 
