@@ -8,17 +8,9 @@ const styles = StyleSheet.create({
   },
 
   loginForm: {
+    // backgroundColor: 'red',
     marginTop: 45,
     width: '100%',
-  },
-
-  formField: {
-    marginBottom: 27,
-  },
-
-  label: {
-    fontWeight: '300',
-    fontSize: 14,
   },
 
   genericField: {

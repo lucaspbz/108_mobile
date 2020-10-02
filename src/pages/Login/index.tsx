@@ -1,8 +1,9 @@
-import React, { useRef, useCallback } from 'react';
-import { Alert, SafeAreaView, TextInput } from 'react-native';
+import React, { useRef, useCallback, useState } from 'react';
+import { SafeAreaView, TextInput, Text } from 'react-native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 
+import { ScrollView } from 'react-native-gesture-handler';
 import { useAuth } from '../../hooks/auth';
 import { useSchedule } from '../../hooks/schedule';
 
@@ -13,6 +14,7 @@ import Input from '../../components/Input';
 import styles from './styles';
 
 const Login: React.FC = () => {
+  const [error, setError] = useState(false);
   const { signIn } = useAuth();
   const { updateAvailableTimes } = useSchedule();
 
@@ -21,10 +23,10 @@ const Login: React.FC = () => {
 
   const handleLogin = useCallback(async ({ email, password }) => {
     signIn({ email, password })
-      .then((response) => updateAvailableTimes())
-      .catch((error) => {
+      .then(updateAvailableTimes)
+      .catch(error => {
         if (error.message === 'Request failed with status code 401') {
-          Alert.alert('Email ou senha incorretos!');
+          setError(true);
         }
       });
   }, []);
@@ -34,35 +36,40 @@ const Login: React.FC = () => {
       <Header>Insira suas informações para realizar o login</Header>
 
       <Form ref={formRef} style={styles.loginForm} onSubmit={handleLogin}>
-        <Input
-          style={styles.genericField}
-          label="E-mail"
-          name="email"
-          placeholder="emaildousuario@usuario"
-          autoCorrect={false}
-          returnKeyType="next"
-          autoCapitalize="none"
-          enablesReturnKeyAutomatically
-          autoFocus
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          onSubmitEditing={() => {
-            passwordInputRef.current?.focus();
-          }}
-        />
+        <ScrollView>
+          <Input
+            label="E-mail"
+            name="email"
+            placeholder="emaildousuario@usuario"
+            autoCorrect={false}
+            returnKeyType="next"
+            autoCapitalize="none"
+            enablesReturnKeyAutomatically
+            autoFocus
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            onSubmitEditing={() => {
+              passwordInputRef.current?.focus();
+            }}
+          />
 
-        <Input
-          label="Senha"
-          name="password"
-          secureTextEntry
-          autoCapitalize="none"
-          textContentType="password"
-          style={styles.genericField}
-          ref={passwordInputRef}
-          onSubmitEditing={() => {
-            formRef.current?.submitForm();
-          }}
-        />
+          <Input
+            label="Senha"
+            name="password"
+            secureTextEntry
+            autoCapitalize="none"
+            textContentType="password"
+            ref={passwordInputRef}
+            onSubmitEditing={() => {
+              formRef.current?.submitForm();
+            }}
+          />
+          {error && (
+            <Text style={{ color: '#8739B3' }}>
+              Algo errado com o login. Por favor, tente novamente.
+            </Text>
+          )}
+        </ScrollView>
       </Form>
 
       <Button

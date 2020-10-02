@@ -7,15 +7,23 @@ import React, {
 import { TextInputProps } from 'react-native';
 import { useField } from '@unform/core';
 
-import { Container, Label, TextInput } from './styles';
+import { Container, Label, Picker, TextInput } from './styles';
+
+interface IData {
+  name: string;
+  id: string;
+}
 
 interface InputProps extends TextInputProps {
   name: string;
   label: string;
+  isPicker?: boolean;
+  isLoading?: boolean;
+  data?: IData[];
 }
 
 interface InputValueReference {
-  value: string;
+  value: string | number;
 }
 
 interface InputRef {
@@ -23,7 +31,7 @@ interface InputRef {
 }
 
 const Input: React.RefForwardingComponent<InputRef, InputProps> = (
-  { name, label, ...rest },
+  { name, label, isPicker = false, isLoading, data, ...rest },
   ref,
 ) => {
   const inputElementRef = useRef<any>(null);
@@ -47,13 +55,28 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
   return (
     <Container>
       <Label>{label}:</Label>
-      <TextInput
-        isErrored={!!error}
-        ref={inputElementRef}
-        defaultValue={defaultValue}
-        {...rest}
-        onChangeText={value => (inputValueRef.current.value = value)}
-      />
+      {!isPicker && (
+        <TextInput
+          isErrored={!!error}
+          ref={inputElementRef}
+          defaultValue={defaultValue}
+          {...rest}
+          onChangeText={value => (inputValueRef.current.value = value)}
+        />
+      )}
+      {isPicker && (
+        <Picker
+          ref={inputElementRef}
+          prompt="Selecione uma opção"
+          selectedValue={selectedCountry}
+          onValueChange={value => (inputValueRef.current.value = value)}
+        >
+          {!isLoading &&
+            data?.map(({ name, id }) => (
+              <Picker.Item key={id} label={name} value={id} />
+            ))}
+        </Picker>
+      )}
     </Container>
   );
 };

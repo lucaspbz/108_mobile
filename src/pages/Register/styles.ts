@@ -14,23 +14,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  formField: {
-    marginBottom: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginRight: 24,
-  },
-
   label: {
     maxWidth: 80,
-  },
-
-  genericField: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
-    width: 240,
-    textAlign: 'center',
   },
 
   formFieldSelect: {
@@ -43,10 +28,6 @@ const styles = StyleSheet.create({
 
   registerButton: {
     marginBottom: 40,
-  },
-
-  registerButtonText: {
-    color: '#FFFFFF',
   },
 });
 

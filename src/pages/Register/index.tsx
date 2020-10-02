@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-community/picker';
+import RNPickerSelect from 'react-native-picker-select';
 import axios from 'axios';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -161,26 +162,6 @@ const Register: React.FC = () => {
         formRef.current?.setErrors(errors);
       }
     }
-
-    // userValidator
-    //   .validate(user)
-    //   .then((ok) => {
-    //     if (user.address.country !== 'Brasil') {
-    //       delete user.address.city;
-    //       delete user.address.state;
-    //     }
-    //     api
-    //       .post('/users', user)
-    //       .then(({ status }) => {
-    //         if (status === 200) {
-    //           signIn({ email, password });
-    //         }
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   })
-    //   .catch((err) => {});
   }
   return (
     <View style={styles.container}>
@@ -230,6 +211,30 @@ const Register: React.FC = () => {
             secureTextEntry
             autoCapitalize="none"
             textContentType="password"
+          />
+
+          {/* <Input label="País" name="country" style={styles.formFieldSelect}>
+            <Text style={styles.label}>País:</Text>
+            <Picker
+              style={styles.picker}
+              prompt="Selecione uma opção"
+              selectedValue={selectedCountry}
+              onValueChange={handleSelectCountry}
+            >
+              {!isLoading &&
+                countries.map(({ name, id }) => (
+                  <Picker.Item key={id} label={name} value={id} />
+                ))}
+            </Picker>
+          </Input> */}
+
+          <RNPickerSelect
+            onValueChange={value => console.log(value)}
+            items={[
+              { label: 'Football', value: 'football' },
+              { label: 'Baseball', value: 'baseball' },
+              { label: 'Hockey', value: 'hockey' },
+            ]}
           />
 
           <View style={styles.formFieldSelect}>
