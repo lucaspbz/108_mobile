@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { TouchableOpacity, Alert } from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from 'react';
+import { TouchableOpacity, Alert } from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-import Modal from "../../components/Modal";
+import Modal from '../../components/Modal';
 
-import FrameImg from "../../assets/Frame.png";
+import FrameImg from '../../assets/Frame.png';
 
-import { useAuth } from "../../hooks/auth";
+import { useAuth } from '../../hooks/auth';
 
 import {
   groupByDatesWithId,
   MappedScheduleWithIdInterface,
   formatToDayString,
   formatToHour,
-} from "../../util/dateParser";
+} from '../../util/dateParser';
 
 import {
   Container,
@@ -33,23 +33,19 @@ import {
   NoAppointmentsImage,
   NoAppointmentsMainText,
   NoAppointmentsSmallText,
-} from "./styles";
-import api from "../../services/api";
+} from './styles';
+import api from '../../services/api';
 
 const UserProfile: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [timeToBeDeleted, setTimeToBeDeleted] = useState(
-    {} as { time: string; id: string }
+    {} as { time: string; id: string },
   );
   const [appointments, setAppointments] = useState<
     MappedScheduleWithIdInterface[] | null
   >([]);
   const { user, signOut } = useAuth();
   const navigate = useNavigation();
-
-  useEffect(() => {
-    loadUserData();
-  }, []);
 
   const loadUserData = useCallback(() => {
     api.get(`/users/${user?.id}`).then(({ data }) => {
@@ -58,7 +54,7 @@ const UserProfile: React.FC = () => {
           (item: { date: string; id: string }) => ({
             date: item.date,
             id: item.id,
-          })
+          }),
         );
 
         const appointmentsByDay = groupByDatesWithId({
@@ -71,17 +67,18 @@ const UserProfile: React.FC = () => {
     });
   }, [user]);
 
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
+
   function handleGoBackButton() {
     navigate.goBack();
   }
 
-  const handleOpenDeleteModal = useCallback(
-    (time: string, id: string) => {
-      setTimeToBeDeleted({ time, id });
-      setModalVisible(true);
-    },
-    [timeToBeDeleted]
-  );
+  const handleOpenDeleteModal = useCallback((time: string, id: string) => {
+    setTimeToBeDeleted({ time, id });
+    setModalVisible(true);
+  }, []);
 
   const handleDeleteTime = useCallback(
     (id: string) => {
@@ -93,15 +90,15 @@ const UserProfile: React.FC = () => {
         })
         .catch(() => {
           setModalVisible(false);
-          Alert.alert("Parece que algo deu errado :(");
+          Alert.alert('Parece que algo deu errado :(');
         });
     },
-    [timeToBeDeleted]
+    [loadUserData],
   );
 
   const handleLogout = useCallback(() => {
     signOut();
-  }, []);
+  }, [signOut]);
 
   return (
     <Container>

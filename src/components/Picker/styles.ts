@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components/native';
+import { Picker as ReactPicker } from '@react-native-community/picker';
 
 interface TextInputProps {
   isErrored: boolean;
@@ -29,4 +30,8 @@ export const TextInput = styled.TextInput<TextInputProps>`
       color: #c53030;
       border-bottom-color: #c53030;
     `};
+`;
+
+export const Picker = styled(ReactPicker)`
+  width: '80%';
 `;

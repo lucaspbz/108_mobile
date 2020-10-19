@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useState } from 'react';
 import { SafeAreaView, TextInput, Text } from 'react-native';
+
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 

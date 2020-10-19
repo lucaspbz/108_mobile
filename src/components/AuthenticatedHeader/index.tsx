@@ -10,7 +10,7 @@ import { useSchedule } from '../../hooks/schedule';
 import styles from './styles';
 
 const AuthenticatedHeader: React.FC = () => {
-  const { activePeriod } = useSchedule()
+  const { activePeriod } = useSchedule();
   const { user } = useAuth();
   const navigate = useNavigation();
 

@@ -4,8 +4,10 @@ import {
   isSameDay,
   format,
   getDay,
-} from "date-fns";
-import { ptBR } from "date-fns/locale";
+  addHours,
+  isAfter,
+} from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface GroupByDatesParams {
   data: string[];
@@ -34,31 +36,37 @@ export interface MappedScheduleWithIdInterface {
 }
 
 const week = [
-  "Domingo",
-  "Segunda-Feira",
-  "Terça-Feira",
-  "Quarta-Feira",
-  "Quinta-Feira",
-  "Sexta-Feira",
-  "Sábado",
+  'Domingo',
+  'Segunda-Feira',
+  'Terça-Feira',
+  'Quarta-Feira',
+  'Quinta-Feira',
+  'Sexta-Feira',
+  'Sábado',
 ];
 
-export function groupByDates({ data }: GroupByDatesParams) {
+export function groupByDates({
+  data,
+}: GroupByDatesParams): MappedScheduleInterface[] {
   if (data.length === 1) {
     return [{ day: parseISO(data[0]), times: [data[0]] }];
   }
 
-  const start = parseISO(data[0]);
-  const end = parseISO(data[data.length - 1]);
+  const sortedData = data.sort((a, b) =>
+    isAfter(parseISO(a), parseISO(b)) ? 1 : -1,
+  );
+
+  const start = addHours(parseISO(sortedData[0]), 3);
+  const end = addHours(parseISO(sortedData[sortedData.length - 1]), 3);
 
   const days = eachDayOfInterval({ start, end });
 
-  const mappedSchedule: MappedScheduleInterface[] = days.map((day) => {
+  const mappedSchedule: MappedScheduleInterface[] = days.map(day => {
     return { day, times: [] };
   });
 
   mappedSchedule.map(({ day, times }) => {
-    data.forEach((time) => {
+    return sortedData.forEach(time => {
       if (isSameDay(day, parseISO(time))) {
         times.push(time);
       }
@@ -68,7 +76,9 @@ export function groupByDates({ data }: GroupByDatesParams) {
   return mappedSchedule;
 }
 
-export function groupByDatesWithId({ schedule }: GroupByDatesWithIdParams) {
+export function groupByDatesWithId({
+  schedule,
+}: GroupByDatesWithIdParams): MappedScheduleWithIdInterface[] {
   if (schedule.length === 1) {
     return [
       {
@@ -76,36 +86,40 @@ export function groupByDatesWithId({ schedule }: GroupByDatesWithIdParams) {
         times: [{ time: schedule[0].date, id: schedule[0].id }],
       },
     ];
-  } else {
-    const start = parseISO(schedule[0].date);
-    const end = parseISO(schedule[schedule.length - 1].date);
-
-    const days = eachDayOfInterval({ start, end });
-
-    const mappedSchedule: MappedScheduleWithIdInterface[] = days.map((day) => {
-      return { day, times: [] };
-    });
-
-    mappedSchedule.map(({ day, times }) => {
-      schedule.forEach((time) => {
-        if (isSameDay(day, parseISO(time.date))) {
-          times.push({ time: time.date, id: time.id });
-        }
-      });
-    });
-
-    return mappedSchedule;
   }
+
+  const sortedSchedule = schedule.sort((a, b) =>
+    isAfter(parseISO(a.date), parseISO(b.date)) ? 1 : -1,
+  );
+
+  const start = parseISO(sortedSchedule[0].date);
+  const end = parseISO(sortedSchedule[sortedSchedule.length - 1].date);
+
+  const days = eachDayOfInterval({ start, end });
+
+  const mappedSchedule: MappedScheduleWithIdInterface[] = days.map(day => {
+    return { day, times: [] };
+  });
+
+  mappedSchedule.map(({ day, times }) => {
+    sortedSchedule.forEach(time => {
+      if (isSameDay(day, parseISO(time.date))) {
+        times.push({ time: time.date, id: time.id });
+      }
+    });
+  });
+
+  return mappedSchedule;
 }
 
 groupByDatesWithId;
 
 export function formatToDayString({ day }: FormatToDayStringParams) {
-  return `${week[getDay(day)]}, ${format(day, "dd/LL", {
+  return `${week[getDay(day)]}, ${format(day, 'dd/LL', {
     locale: ptBR,
   })}`;
 }
 
 export function formatToHour({ time }: FormatToHourParams) {
-  return format(parseISO(time), "HH:mm");
+  return format(parseISO(time), 'HH:mm');
 }

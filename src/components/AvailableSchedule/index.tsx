@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import { AxiosResponse } from "axios";
-import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useEffect } from 'react';
+import { AxiosResponse } from 'axios';
+import { View, Text, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { useSchedule } from "../../hooks/schedule";
-import { useAuth } from "../../hooks/auth";
+import { useSchedule } from '../../hooks/schedule';
+import { useAuth } from '../../hooks/auth';
 
-import { formatToDayString, formatToHour } from "../../util/dateParser";
+import { formatToDayString, formatToHour } from '../../util/dateParser';
 
-import styles from "./styles";
-import api from "../../services/api";
-import Button from "../Button";
+import styles from './styles';
+import api from '../../services/api';
+import Button from '../Button';
 
 const AvailableSchedule: React.FC = () => {
   const navigation = useNavigation();
@@ -35,8 +35,8 @@ const AvailableSchedule: React.FC = () => {
   function handleConfirmSelectedTimes() {
     const promises: Promise<AxiosResponse>[] = [];
 
-    selectedTimes.forEach((time) => {
-      const newPromise = api.post("/appointments", {
+    selectedTimes.forEach(time => {
+      const newPromise = api.post('/appointments', {
         date: time,
       });
       promises.push(newPromise);
@@ -45,20 +45,20 @@ const AvailableSchedule: React.FC = () => {
     Promise.all(promises)
       .then(() => {
         updateAvailableTimes();
-        navigation.navigate("ConfirmedSelectedSchedule");
+        navigation.navigate('ConfirmedSelectedSchedule');
       })
-      .catch((err) => {
-        if (err.response.data.message === "Invalid JWT token") {
+      .catch(err => {
+        if (err.response.data.message === 'Invalid JWT token') {
           Alert.alert(
-            "Error:",
-            "Ops, parece que sua sessão expirou! Favor fazer login novamente."
+            'Error:',
+            'Ops, parece que sua sessão expirou! Favor fazer login novamente.',
           );
           signOut();
         }
-        if (err.response.data.message === "JWT token is missing") {
+        if (err.response.data.message === 'JWT token is missing') {
           Alert.alert(
-            "Error:",
-            "Ops, algo deu errado! Favor fazer login novamente."
+            'Error:',
+            'Ops, algo deu errado! Favor fazer login novamente.',
           );
           signOut();
         }
@@ -83,7 +83,7 @@ const AvailableSchedule: React.FC = () => {
                 <Text style={styles.itemTitle}>{formattedDay}:</Text>
               </View>
               <FlatList
-                keyExtractor={(item) => item}
+                keyExtractor={item => item}
                 data={times}
                 horizontal
                 style={styles.dayList}
@@ -115,11 +115,11 @@ const AvailableSchedule: React.FC = () => {
                     </TouchableOpacity>
                   );
                 }}
-              ></FlatList>
+              />
             </View>
           );
         }}
-      ></FlatList>
+      />
       <View style={{ height: 100 }}>
         {selectedTimes.length > 0 && (
           <Button

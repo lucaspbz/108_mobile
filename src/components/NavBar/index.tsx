@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 import styles from './styles';
@@ -9,9 +9,12 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({ activeTab, setActiveTab }) => {
-  function handleNavigateTab(destinationTab: string) {
-    setActiveTab(destinationTab);
-  }
+  const handleNavigateTab = useCallback(
+    (destinationTab: string) => {
+      setActiveTab(destinationTab);
+    },
+    [setActiveTab],
+  );
 
   return (
     <View style={styles.tabs}>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-community/picker';
-import RNPickerSelect from 'react-native-picker-select';
 import axios from 'axios';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -20,14 +19,13 @@ import Button from '../../components/Button';
 
 interface UserInterface {
   name: string;
+  phone: string;
   email: string;
   password: string;
   confirmPassword: string;
-  address: {
-    country: string;
-    state?: string;
-    city?: string;
-  };
+  country: string;
+  state?: string;
+  city?: string;
 }
 
 interface CountriesRequestInterface {
@@ -114,31 +112,31 @@ const Register: React.FC = () => {
 
   async function handleSubmitForm({
     name,
+    phone,
     password,
     confirmPassword,
     email,
   }: UserInterface) {
     const user = {
+      phone,
       name,
       password,
       confirmPassword,
       email,
-      address: {
-        country: countries.find(country => country.id === selectedCountry)
-          ?.name,
-        state: states.find(state => {
-          return Number(state.id) === selectedState;
-        })?.name,
-        city: selectedCity,
-      },
+
+      country: countries.find(country => country.id === selectedCountry)?.name,
+      state: states.find(state => {
+        return Number(state.id) === selectedState;
+      })?.name,
+      city: selectedCity,
     };
 
     try {
       formRef.current?.setErrors({});
       await userValidator.validate(user, { abortEarly: false });
-      if (user.address.country !== 'Brasil') {
-        user.address.city = '';
-        user.address.state = '';
+      if (user.country !== 'Brasil') {
+        user.city = '';
+        user.state = '';
       }
       api.post('/users', user).then(({ status }) => {
         if (status === 200) {
@@ -181,6 +179,16 @@ const Register: React.FC = () => {
           />
 
           <Input
+            name="phone"
+            label="Telefone"
+            placeholder="(00) 98765.4321"
+            returnKeyType="next"
+            autoCompleteType="tel"
+            textContentType="telephoneNumber"
+            keyboardType="phone-pad"
+          />
+
+          <Input
             autoCorrect={false}
             name="email"
             label="E-mail"
@@ -211,30 +219,6 @@ const Register: React.FC = () => {
             secureTextEntry
             autoCapitalize="none"
             textContentType="password"
-          />
-
-          {/* <Input label="País" name="country" style={styles.formFieldSelect}>
-            <Text style={styles.label}>País:</Text>
-            <Picker
-              style={styles.picker}
-              prompt="Selecione uma opção"
-              selectedValue={selectedCountry}
-              onValueChange={handleSelectCountry}
-            >
-              {!isLoading &&
-                countries.map(({ name, id }) => (
-                  <Picker.Item key={id} label={name} value={id} />
-                ))}
-            </Picker>
-          </Input> */}
-
-          <RNPickerSelect
-            onValueChange={value => console.log(value)}
-            items={[
-              { label: 'Football', value: 'football' },
-              { label: 'Baseball', value: 'baseball' },
-              { label: 'Hockey', value: 'hockey' },
-            ]}
           />
 
           <View style={styles.formFieldSelect}>

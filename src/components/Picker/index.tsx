@@ -22,7 +22,7 @@ interface InputRef {
   focus(): void;
 }
 
-const Input: React.RefForwardingComponent<InputRef, InputProps> = (
+const Picker: React.RefForwardingComponent<InputRef, InputProps> = (
   { name, label, ...rest },
   ref,
 ) => {
@@ -50,6 +50,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
       <TextInput
         isErrored={!!error}
         ref={inputElementRef}
+        defaultValue={defaultValue}
         {...rest}
         onChangeText={value => (inputValueRef.current.value = value)}
       />
@@ -57,4 +58,4 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
   );
 };
 
-export default forwardRef(Input);
+export default forwardRef(Picker);

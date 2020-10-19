@@ -4,15 +4,15 @@ import React, {
   useState,
   useContext,
   useEffect,
-} from "react";
-import { format, getDate } from 'date-fns'
-import { ptBR } from "date-fns/locale";
+} from 'react';
+import { format, getDate, addHours } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-import api from "../services/api";
-import socket from "../services/socket";
+import { Alert } from 'react-native';
+import api from '../services/api';
+import socket from '../services/socket';
 
-import { groupByDates, MappedScheduleInterface } from "../util/dateParser";
-import { Alert } from "react-native";
+import { groupByDates, MappedScheduleInterface } from '../util/dateParser';
 
 interface ScheduleContextData {
   availableSchedule: MappedScheduleInterface[];
@@ -23,59 +23,61 @@ interface ScheduleContextData {
 }
 
 const ScheduleContext = createContext<ScheduleContextData>(
-  {} as ScheduleContextData
+  {} as ScheduleContextData,
 );
 
 const ScheduleProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<MappedScheduleInterface[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
-  const [activePeriod, setActivePeriod] = useState('')
-
-  useEffect(() => {
-    socket.on("newAppointments", (appointments: string[]) => {
-      const groupedSchedule = groupByDates({ data: appointments });
-      setData(groupedSchedule);
-    });
-    updateAvailableTimes();
-  }, [socket]);
+  const [activePeriod, setActivePeriod] = useState('');
 
   const toggleSelectedIcon = useCallback(
     (time: string) => {
       if (selectedTimes.includes(time)) {
-        //remove do estado
-        const filteredTimes = selectedTimes.filter((selectedTime) => {
+        // remove do estado
+        const filteredTimes = selectedTimes.filter(selectedTime => {
           return selectedTime !== time;
         });
         setSelectedTimes(filteredTimes);
       } else {
-        //adiciona ao estado
+        // adiciona ao estado
         setSelectedTimes([...selectedTimes, time]);
       }
     },
-    [selectedTimes]
+    [selectedTimes],
   );
 
   const updateAvailableTimes = useCallback(() => {
     api
-      .get("/appointments/available")
+      .get('/appointments/available')
       .then(({ data }) => {
-        const groupedSchedule = groupByDates({ data: data.availableAppointments });
+        const groupedSchedule = groupByDates({
+          data: data.availableAppointments,
+        });
         setData(groupedSchedule);
-        setSelectedTimes([])
+        setSelectedTimes([]);
 
-        const startDate = new Date(data.period.start)
-        const endDate = new Date(data.period.end)
+        const startDate = addHours(new Date(data.period.start), 3);
+        const endDate = addHours(new Date(data.period.end), 3);
 
-        const formatedPeriod = `${getDate(startDate)} a ${getDate(endDate)} de ${format(endDate, "MMMM 'de' yyyy", { locale: ptBR })}`
-        setActivePeriod(formatedPeriod)
+        const formatedPeriod = `${getDate(startDate)} a ${getDate(
+          endDate,
+        )} de ${format(endDate, "MMMM 'de' yyyy", { locale: ptBR })}`;
 
+        setActivePeriod(formatedPeriod);
       })
       .catch(() => {
-        Alert.alert("Something went very wrong!");
+        Alert.alert('Something went very wrong!');
       });
-
-    setData(data);
   }, []);
+
+  useEffect(() => {
+    socket.on('newAppointments', (appointments: string[]) => {
+      const groupedSchedule = groupByDates({ data: appointments });
+      setData(groupedSchedule);
+    });
+    updateAvailableTimes();
+  }, [updateAvailableTimes]);
   return (
     <ScheduleContext.Provider
       value={{
@@ -83,7 +85,7 @@ const ScheduleProvider: React.FC = ({ children }) => {
         toggleSelectedIcon,
         selectedTimes,
         updateAvailableTimes,
-        activePeriod
+        activePeriod,
       }}
     >
       {children}
@@ -95,7 +97,7 @@ function useSchedule(): ScheduleContextData {
   const context = useContext(ScheduleContext);
 
   if (!context) {
-    throw new Error("useSchedule must be used within an ScheduleProvider");
+    throw new Error('useSchedule must be used within an ScheduleProvider');
   }
 
   return context;
