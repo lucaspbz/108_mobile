@@ -1,49 +1,45 @@
-import { StyleSheet } from 'react-native';
+import { RectButton } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
+import styled from 'styled-components/native';
 
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: 'rgba(202, 83, 215, 0.6)',
-    width: '100%',
-    height: 160 + Constants.statusBarHeight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-  },
+export const Header = styled.View`
+  background-color: rgba(202, 83, 215, 0.6);
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+`;
 
-  userName: {
-    position: 'absolute',
-    top: 18 + Constants.statusBarHeight,
-    right: 18,
-    flexDirection: 'row',
-  },
+export const UserName = styled(RectButton)`
+  position: absolute;
+  top: ${Constants.statusBarHeight + 18}px;
+  right: 18px;
+  flex-direction: row;
+`;
 
-  userNameText: {
-    color: '#4A2787',
-    fontWeight: '500',
-    fontSize: 14,
-    textAlign: 'right',
-    marginRight: 8,
-  },
+export const UserNameText = styled.Text`
+  color: #4a2787;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: right;
+  margin-right: 8px;
+`;
 
-  title: {
-    fontSize: 30,
-    lineHeight: 37,
-    color: '#ffffff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginHorizontal: 48,
-    marginTop: 64 + Constants.statusBarHeight,
-  },
+export const Title = styled.Text`
+  font-size: 26px;
+  line-height: 32px;
+  max-width: 80%;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 64px;
+`;
 
-  subtitle: {
-    color: '#ffffff',
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    marginBottom: 32,
-  },
-});
-
-export default styles;
+export const Subtitle = styled.Text`
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: bold;
+  margin-bottom: 16px;
+`;

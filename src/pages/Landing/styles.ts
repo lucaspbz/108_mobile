@@ -1,54 +1,51 @@
-import { StyleSheet } from 'react-native';
+import { Link } from '@react-navigation/native';
+import styled from 'styled-components/native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-  },
+export const Container = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+`;
 
-  textContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 48,
-  },
+export const TextContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  margin-top: 48px;
+`;
 
-  textBold: {
-    fontWeight: 'bold',
-    fontSize: 26,
-    color: '#333333',
-  },
+export const TextBold = styled.Text`
+  font-weight: bold;
+  font-size: 26px;
+  color: #333333;
+`;
 
-  wellcomeText: {
-    marginTop: 15,
-    fontSize: 16,
-    lineHeight: 26,
-    textAlign: 'center',
-    color: '#333333',
-  },
+export const WellcomeText = styled.Text`
+  margin-top: 15px;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  color: #333333;
+`;
 
-  banner: {
-    marginTop: 8,
-    width: '100%',
-    resizeMode: 'contain',
-  },
+export const Banner = styled.Image`
+  width: 100%;
+  margin: auto auto;
+  resize-mode: contain;
+`;
 
-  buttonsContainer: {
-    alignItems: 'center',
-    marginBottom: 80,
-  },
+export const ButtonsContainer = styled.View`
+  align-items: center;
+  margin: auto auto 32px;
+`;
 
-  alreadyRegisteredButton: {
-    marginTop: 25,
-  },
+export const AlreadyRegisteredButton = styled(Link)`
+  margin-top: 25px;
+`;
 
-  alreadyRegisteredButtonText: {
-    color: '#4A2787',
-    fontWeight: 'bold',
-    fontSize: 14,
-    lineHeight: 26,
-  },
-});
-
-export default styles;
+export const AlreadyRegisteredButtonText = styled.Text`
+  color: #8739b3;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 26px;
+`;

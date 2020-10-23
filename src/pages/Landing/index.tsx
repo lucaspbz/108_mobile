@@ -1,37 +1,47 @@
 import React, { useCallback } from 'react';
-import { View, Text, Image } from 'react-native';
-import { Link, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import landingImg from '../../assets/login.png';
 
-import styles from './styles';
+import {
+  AlreadyRegisteredButton,
+  AlreadyRegisteredButtonText,
+  Banner,
+  ButtonsContainer,
+  Container,
+  TextBold,
+  TextContainer,
+  WellcomeText,
+} from './styles';
 import Button from '../../components/Button';
 
 const Landing: React.FC = () => {
   const navigation = useNavigation();
   const handleRegister = useCallback(() => {
     navigation.navigate('Register');
-  }, []);
+  }, [navigation]);
   return (
-    <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Text style={styles.textBold}>Bem-vindo!</Text>
-        <Text style={styles.wellcomeText}>
+    <Container>
+      <TextContainer>
+        <TextBold>Bem-vindo!</TextBold>
+        <WellcomeText>
           Seja bem-vindo ao 108 horas orando com a Mãe Divina, um movimento
           coletivo e ecumênico de pessoas orando junto à Mãe Divina
-        </Text>
-      </View>
+        </WellcomeText>
+      </TextContainer>
 
-      <Image style={styles.banner} source={landingImg} />
+      <Banner source={landingImg} />
 
-      <View style={styles.buttonsContainer}>
+      <ButtonsContainer>
         <Button title="Cadastre-se" onPress={handleRegister} />
 
-        <Link style={styles.alreadyRegisteredButton} to="/Login">
-          <Text style={styles.alreadyRegisteredButtonText}>Já tenho conta</Text>
-        </Link>
-      </View>
-    </View>
+        <AlreadyRegisteredButton to="/Login">
+          <AlreadyRegisteredButtonText>
+            Já tenho conta
+          </AlreadyRegisteredButtonText>
+        </AlreadyRegisteredButton>
+      </ButtonsContainer>
+    </Container>
   );
 };
 

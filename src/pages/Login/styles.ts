@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
   },
 
   loginForm: {
-    // backgroundColor: 'red',
     marginTop: 45,
     width: '100%',
   },

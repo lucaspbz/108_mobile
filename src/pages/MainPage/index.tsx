@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, SafeAreaView } from 'react-native';
 
 import AuthenticatedHeader from '../../components/AuthenticatedHeader';
 
@@ -15,7 +15,7 @@ const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('AvailableSchedule');
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <AuthenticatedHeader />
 
       <Text style={styles.text}>Colabore com nossa jornada de cura !</Text>
@@ -29,7 +29,7 @@ const MainPage: React.FC = () => {
 
         {activeTab === 'Contact' && <Contact />}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

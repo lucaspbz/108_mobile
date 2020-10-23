@@ -1,34 +1,35 @@
-import { StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
+import { Form } from '@unform/mobile';
+import { Picker as ReactNativePicker } from '@react-native-community/picker';
+import Button from '../../components/Button';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+export const Container = styled.View`
+  flex: 1;
+  padding: 16px;
+  align-items: center;
+  justify-content: space-between;
+`;
 
-  loginForm: {
-    width: '100%',
-    marginTop: 48,
-    flex: 1,
-  },
+export const LoginForm = styled(Form)`
+  width: 100%;
+  margin-top: 48px;
+  flex: 1;
+`;
 
-  label: {
-    maxWidth: 80,
-  },
+export const Label = styled.Text`
+  max-width: 80px;
+`;
 
-  formFieldSelect: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+export const FormFieldSelect = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 
-  picker: { width: '80%' },
+export const Picker = styled(ReactNativePicker)`
+  width: 80%;
+`;
 
-  registerButton: {
-    marginBottom: 40,
-  },
-});
-
-export default styles;
+export const RegisterButton = styled(Button)`
+  margin-bottom: 40px;
+`;

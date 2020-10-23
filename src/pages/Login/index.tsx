@@ -22,15 +22,18 @@ const Login: React.FC = () => {
   const passwordInputRef = useRef<TextInput>(null);
   const formRef = useRef<FormHandles>(null);
 
-  const handleLogin = useCallback(async ({ email, password }) => {
-    signIn({ email, password })
-      .then(updateAvailableTimes)
-      .catch(error => {
-        if (error.message === 'Request failed with status code 401') {
-          setError(true);
-        }
-      });
-  }, []);
+  const handleLogin = useCallback(
+    async ({ email, password }) => {
+      signIn({ email, password })
+        .then(updateAvailableTimes)
+        .catch(error => {
+          if (error.message === 'Request failed with status code 401') {
+            setError(true);
+          }
+        });
+    },
+    [signIn, updateAvailableTimes],
+  );
 
   return (
     <SafeAreaView style={styles.container}>

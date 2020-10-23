@@ -48,7 +48,7 @@ const UserProfile: React.FC = () => {
   const navigate = useNavigation();
 
   const loadUserData = useCallback(() => {
-    api.get(`/users/${user?.id}`).then(({ data }) => {
+    api.get('/users').then(({ data }) => {
       try {
         const filteredAppointments = data.user.appointments.map(
           (item: { date: string; id: string }) => ({

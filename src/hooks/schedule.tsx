@@ -78,6 +78,7 @@ const ScheduleProvider: React.FC = ({ children }) => {
     });
     updateAvailableTimes();
   }, [updateAvailableTimes]);
+
   return (
     <ScheduleContext.Provider
       value={{

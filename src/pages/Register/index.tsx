@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
-import { Picker } from '@react-native-community/picker';
+import { ScrollView, Alert, TextInput, Keyboard } from 'react-native';
 import axios from 'axios';
 import { FormHandles } from '@unform/core';
-import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
 
 import Input from '../../components/Input';
@@ -14,8 +12,14 @@ import { userValidator } from '../../util/validators';
 import getValidationErrors from '../../util/getValidationErrors';
 import { useAuth } from '../../hooks/auth';
 
-import styles from './styles';
-import Button from '../../components/Button';
+import {
+  Container,
+  FormFieldSelect,
+  Label,
+  LoginForm,
+  RegisterButton,
+  Picker,
+} from './styles';
 
 interface UserInterface {
   name: string;
@@ -45,6 +49,11 @@ interface StatesRequestInterface {
 
 const Register: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const nameFieldRef = useRef<TextInput>(null);
+  const phoneFieldRef = useRef<TextInput>(null);
+  const emailFieldRef = useRef<TextInput>(null);
+  const passwordFieldRef = useRef<TextInput>(null);
+  const confirmPasswordFieldRef = useRef<TextInput>(null);
   const { signIn } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -162,10 +171,10 @@ const Register: React.FC = () => {
     }
   }
   return (
-    <View style={styles.container}>
+    <Container>
       <Header>Preencha as informações para finalizar seu cadastro</Header>
 
-      <Form ref={formRef} onSubmit={handleSubmitForm} style={styles.loginForm}>
+      <LoginForm ref={formRef} onSubmit={handleSubmitForm}>
         <ScrollView>
           <Input
             name="name"
@@ -175,7 +184,10 @@ const Register: React.FC = () => {
             autoCapitalize="words"
             autoCompleteType="name"
             textContentType="name"
-            autoFocus
+            ref={nameFieldRef}
+            onSubmitEditing={() => {
+              phoneFieldRef.current?.focus();
+            }}
           />
 
           <Input
@@ -186,6 +198,10 @@ const Register: React.FC = () => {
             autoCompleteType="tel"
             textContentType="telephoneNumber"
             keyboardType="phone-pad"
+            ref={phoneFieldRef}
+            onSubmitEditing={() => {
+              emailFieldRef.current?.focus();
+            }}
           />
 
           <Input
@@ -199,6 +215,10 @@ const Register: React.FC = () => {
             autoCompleteType="email"
             textContentType="emailAddress"
             placeholder="emaildousuario@usuario"
+            ref={emailFieldRef}
+            onSubmitEditing={() => {
+              passwordFieldRef.current?.focus();
+            }}
           />
 
           <Input
@@ -209,6 +229,10 @@ const Register: React.FC = () => {
             secureTextEntry
             autoCapitalize="none"
             textContentType="password"
+            ref={passwordFieldRef}
+            onSubmitEditing={() => {
+              confirmPasswordFieldRef.current?.focus();
+            }}
           />
 
           <Input
@@ -219,12 +243,15 @@ const Register: React.FC = () => {
             secureTextEntry
             autoCapitalize="none"
             textContentType="password"
+            ref={confirmPasswordFieldRef}
+            onSubmitEditing={() => {
+              Keyboard.dismiss();
+            }}
           />
 
-          <View style={styles.formFieldSelect}>
-            <Text style={styles.label}>País:</Text>
+          <FormFieldSelect>
+            <Label>País:</Label>
             <Picker
-              style={styles.picker}
               prompt="Selecione uma opção"
               selectedValue={selectedCountry}
               onValueChange={handleSelectCountry}
@@ -234,13 +261,12 @@ const Register: React.FC = () => {
                   <Picker.Item key={id} label={name} value={id} />
                 ))}
             </Picker>
-          </View>
+          </FormFieldSelect>
           {selectedCountry === 'BRA' && !isLoading && (
             <>
-              <View style={styles.formFieldSelect}>
-                <Text style={styles.label}>Estado:</Text>
+              <FormFieldSelect>
+                <Label>Estado:</Label>
                 <Picker
-                  style={styles.picker}
                   prompt="Selecione uma opção"
                   selectedValue={selectedState}
                   onValueChange={handleSelectState}
@@ -249,12 +275,11 @@ const Register: React.FC = () => {
                     <Picker.Item key={id} label={name} value={id} />
                   ))}
                 </Picker>
-              </View>
+              </FormFieldSelect>
 
-              <View style={styles.formFieldSelect}>
-                <Text style={styles.label}>Cidade:</Text>
+              <FormFieldSelect>
+                <Label>Cidade:</Label>
                 <Picker
-                  style={styles.picker}
                   prompt="Selecione uma opção"
                   selectedValue={selectedCity}
                   onValueChange={handleSelectCity}
@@ -263,20 +288,19 @@ const Register: React.FC = () => {
                     <Picker.Item label={name} value={name} key={id} />
                   ))}
                 </Picker>
-              </View>
+              </FormFieldSelect>
             </>
           )}
         </ScrollView>
-      </Form>
+      </LoginForm>
 
-      <Button
-        style={styles.registerButton}
+      <RegisterButton
         title="Finalizar cadastro"
         onPress={() => {
           formRef.current?.submitForm();
         }}
       />
-    </View>
+    </Container>
   );
 };
 

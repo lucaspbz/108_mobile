@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+
 import { AxiosResponse } from 'axios';
 import { View, Text, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -30,7 +31,7 @@ const AvailableSchedule: React.FC = () => {
 
   useEffect(() => {
     updateAvailableTimes();
-  }, []);
+  }, [updateAvailableTimes]);
 
   function handleConfirmSelectedTimes() {
     const promises: Promise<AxiosResponse>[] = [];

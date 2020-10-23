@@ -6,15 +6,16 @@ import AppProvider from './src/hooks';
 
 import Routes from './src/routes';
 
-export default function App() {
-
+const App: React.FC = () => {
   return (
     <NavigationContainer>
-      <StatusBar hidden />
+      <StatusBar translucent />
 
       <AppProvider>
         <Routes />
       </AppProvider>
     </NavigationContainer>
   );
-}
+};
+
+export default App;

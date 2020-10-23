@@ -114,7 +114,7 @@ export function groupByDatesWithId({
 
 groupByDatesWithId;
 
-export function formatToDayString({ day }: FormatToDayStringParams) {
+export function formatToDayString({ day }: FormatToDayStringParams): string {
   return `${week[getDay(day)]}, ${format(day, 'dd/LL', {
     locale: ptBR,
   })}`;
