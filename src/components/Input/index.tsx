@@ -50,8 +50,8 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
       <TextInput
         isErrored={!!error}
         ref={inputElementRef}
-        {...rest}
         onChangeText={value => (inputValueRef.current.value = value)}
+        {...rest}
       />
     </Container>
   );

@@ -16,6 +16,7 @@ import styles from './styles';
 
 const Login: React.FC = () => {
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   const { updateAvailableTimes } = useSchedule();
 
@@ -23,12 +24,14 @@ const Login: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const handleLogin = useCallback(
-    async ({ email, password }) => {
+    ({ email, password }) => {
+      setLoading(true);
       signIn({ email, password })
         .then(updateAvailableTimes)
         .catch(error => {
           if (error.message === 'Request failed with status code 401') {
             setError(true);
+            setLoading(false);
           }
         });
     },
@@ -60,6 +63,7 @@ const Login: React.FC = () => {
           <Input
             label="Senha"
             name="password"
+            placeholder="Senha"
             secureTextEntry
             autoCapitalize="none"
             textContentType="password"
@@ -78,7 +82,7 @@ const Login: React.FC = () => {
 
       <Button
         style={{ marginTop: 80 }}
-        title="Entrar"
+        title={loading ? 'Aguarde...' : 'Entrar'}
         onPress={() => {
           formRef.current?.submitForm();
         }}

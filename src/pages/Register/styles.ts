@@ -1,6 +1,5 @@
 import styled from 'styled-components/native';
 import { Form } from '@unform/mobile';
-import { Picker as ReactNativePicker } from '@react-native-community/picker';
 import Button from '../../components/Button';
 
 export const Container = styled.View`
@@ -16,20 +15,6 @@ export const LoginForm = styled(Form)`
   flex: 1;
 `;
 
-export const Label = styled.Text`
-  max-width: 80px;
-`;
-
-export const FormFieldSelect = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const Picker = styled(ReactNativePicker)`
-  width: 80%;
-`;
-
 export const RegisterButton = styled(Button)`
-  margin-bottom: 40px;
+  margin: 16px auto 32px;
 `;

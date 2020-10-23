@@ -1,4 +1,5 @@
 import { RectButton } from 'react-native-gesture-handler';
+import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import styled from 'styled-components/native';
 
@@ -13,7 +14,7 @@ export const Header = styled.View`
 
 export const UserName = styled(RectButton)`
   position: absolute;
-  top: ${Constants.statusBarHeight + 18}px;
+  top: ${Platform.OS === 'ios' ? 18 : Constants.statusBarHeight + 18}px;
   right: 18px;
   flex-direction: row;
 `;
@@ -29,11 +30,11 @@ export const UserNameText = styled.Text`
 export const Title = styled.Text`
   font-size: 26px;
   line-height: 32px;
-  max-width: 80%;
+  max-width: 90%;
   color: #ffffff;
   font-weight: bold;
   text-align: center;
-  margin-top: 64px;
+  margin-top: ${Platform.OS === 'ios' ? Constants.statusBarHeight : 64}px;
 `;
 
 export const Subtitle = styled.Text`

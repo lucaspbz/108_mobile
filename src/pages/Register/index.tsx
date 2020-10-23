@@ -1,25 +1,30 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { ScrollView, Alert, TextInput, Keyboard } from 'react-native';
-import axios from 'axios';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
+import {
+  ScrollView,
+  Alert,
+  TextInput,
+  Keyboard,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
 import Input from '../../components/Input';
 
 import Header from '../../components/Header';
-import api, { statesApi } from '../../services/api';
+import api from '../../services/api';
 import { userValidator } from '../../util/validators';
 import getValidationErrors from '../../util/getValidationErrors';
 import { useAuth } from '../../hooks/auth';
 
-import {
-  Container,
-  FormFieldSelect,
-  Label,
-  LoginForm,
-  RegisterButton,
-  Picker,
-} from './styles';
+import { Container, LoginForm, RegisterButton } from './styles';
+import Select from '../../components/Select';
 
 interface UserInterface {
   name: string;
@@ -32,270 +37,272 @@ interface UserInterface {
   city?: string;
 }
 
-interface CountriesRequestInterface {
-  translations: { br: string };
-  alpha3Code: string;
-}
-
-interface StatesInterface {
+interface Country {
+  id: number;
   name: string;
-  id: string;
+  states: State[];
 }
 
-interface StatesRequestInterface {
-  nome: string;
-  id: string;
+interface State {
+  id: number;
+  name: string;
+  cities: City[];
+}
+
+interface City {
+  id: number;
+  name: string;
 }
 
 const Register: React.FC = () => {
+  const { signIn } = useAuth();
+
   const formRef = useRef<FormHandles>(null);
   const nameFieldRef = useRef<TextInput>(null);
   const phoneFieldRef = useRef<TextInput>(null);
   const emailFieldRef = useRef<TextInput>(null);
   const passwordFieldRef = useRef<TextInput>(null);
   const confirmPasswordFieldRef = useRef<TextInput>(null);
-  const { signIn } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [countries, setCountries] = useState<StatesInterface[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState('BRA');
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState(31);
 
-  const [states, setStates] = useState<StatesInterface[]>([]);
   const [selectedState, setSelectedState] = useState(0);
 
-  const [cities, setCities] = useState<StatesInterface[]>([]);
-  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedCity, setSelectedCity] = useState(0);
 
   useEffect(() => {
-    setIsLoading(true);
-    axios.get('https://restcountries.eu/rest/v2/all').then(({ data }) => {
-      const countries = data.map(
-        ({ translations, alpha3Code }: CountriesRequestInterface) => {
-          return {
-            name: translations.br,
-            id: alpha3Code,
-          };
-        },
+    async function loadData() {
+      setIsLoading(true);
+      const response = await fetch(
+        'https://raw.githubusercontent.com/lucaspbz/countries-states-cities-database/master/countries%2Bstates%2Bcities.json',
       );
 
+      const data: Country[] = await response.json();
       setIsLoading(false);
-      setCountries(countries);
-    });
+      setCountries(data);
+    }
+    loadData();
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    statesApi.get('/').then(({ data }) => {
-      const states = data.map(({ id, nome }: StatesRequestInterface) => ({
-        id,
-        name: nome,
-      }));
+  const states = useMemo(() => {
+    if (!countries) {
+      return [];
+    }
+    const foundCountry = countries.find(
+      country => country.id === selectedCountry,
+    );
 
-      setStates(states);
-      setIsLoading(false);
-    });
+    if (!foundCountry) {
+      return [];
+    }
+    return foundCountry.states;
+  }, [countries, selectedCountry]);
+
+  const cities = useMemo(() => {
+    if (!states) {
+      return [];
+    }
+
+    const foundState = states.find(state => state.id === selectedState);
+    if (!foundState) {
+      return [];
+    }
+
+    return foundState.cities;
+  }, [selectedState, states]);
+
+  const handleSelectCountry = useCallback((country: React.ReactText) => {
+    setSelectedCountry(Number(country));
   }, []);
 
-  useEffect(() => {
-    statesApi.get(`/${selectedState}/municipios`).then(({ data }) => {
-      const cities = data.map(({ id, nome }: StatesRequestInterface) => ({
-        name: nome,
-        id,
-      }));
+  const handleSelectState = useCallback((state: React.ReactText) => {
+    setSelectedState(Number(state));
+  }, []);
 
-      setCities(cities);
-    });
-  }, [selectedState]);
+  const handleSelectCity = useCallback((city: React.ReactText) => {
+    setSelectedCity(Number(city));
+  }, []);
 
-  function handleSelectCountry(country: React.ReactText) {
-    setSelectedCountry(country.toString());
-  }
-
-  function handleSelectState(state: React.ReactText) {
-    setSelectedState(Number(state.toString()));
-  }
-
-  function handleSelectCity(city: React.ReactText) {
-    setSelectedCity(city.toString());
-  }
-
-  async function handleSubmitForm({
-    name,
-    phone,
-    password,
-    confirmPassword,
-    email,
-  }: UserInterface) {
-    const user = {
-      phone,
+  const handleSubmitForm = useCallback(
+    async ({
       name,
+      phone,
       password,
       confirmPassword,
       email,
+    }: UserInterface) => {
+      setIsLoading(true);
+      const user = {
+        phone,
+        name,
+        password,
+        confirmPassword,
+        email,
 
-      country: countries.find(country => country.id === selectedCountry)?.name,
-      state: states.find(state => {
-        return Number(state.id) === selectedState;
-      })?.name,
-      city: selectedCity,
-    };
+        country: countries.find(country => country.id === selectedCountry)
+          ?.name,
+        state: states.find(state => state.id === selectedState)?.name,
+        city: cities.find(city => city.id === selectedCity)?.name,
+      };
 
-    try {
-      formRef.current?.setErrors({});
-      await userValidator.validate(user, { abortEarly: false });
-      if (user.country !== 'Brasil') {
-        user.city = '';
-        user.state = '';
-      }
-      api.post('/users', user).then(({ status }) => {
-        if (status === 200) {
+      try {
+        formRef.current?.setErrors({});
+        await userValidator.validate(user, { abortEarly: false });
+        api.post('/users', user).then(({ status }) => {
+          if (status === 200) {
+            Alert.alert(
+              'Cadastro realizado com sucesso!',
+              'Você será redirecionado para a página principal.',
+            );
+            signIn({ email, password });
+          }
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          console.log(err.inner);
+
           Alert.alert(
-            'Cadastro realizado com sucesso!',
-            'Você será redirecionado para a página principal.',
+            'Erro:',
+            'Algo deu errado, por favor confira os dados inseridos.',
           );
-          signIn({ email, password });
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+          setIsLoading(false);
         }
-      });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        console.log(err.inner);
-
-        Alert.alert(
-          'Erro:',
-          'Algo deu errado, por favor confira os dados inseridos.',
-        );
-        const errors = getValidationErrors(err);
-
-        formRef.current?.setErrors(errors);
       }
-    }
-  }
+    },
+    [
+      cities,
+      countries,
+      selectedCity,
+      selectedCountry,
+      selectedState,
+      signIn,
+      states,
+    ],
+  );
   return (
     <Container>
       <Header>Preencha as informações para finalizar seu cadastro</Header>
 
       <LoginForm ref={formRef} onSubmit={handleSubmitForm}>
-        <ScrollView>
-          <Input
-            name="name"
-            label="Nome"
-            placeholder="Seu nome aqui"
-            returnKeyType="next"
-            autoCapitalize="words"
-            autoCompleteType="name"
-            textContentType="name"
-            ref={nameFieldRef}
-            onSubmitEditing={() => {
-              phoneFieldRef.current?.focus();
-            }}
-          />
+        <KeyboardAvoidingView style={{ flex: 1 }} enabled>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Input
+              name="name"
+              label="Nome"
+              placeholder="Seu nome aqui"
+              returnKeyType="next"
+              autoCapitalize="words"
+              autoCompleteType="name"
+              textContentType="name"
+              ref={nameFieldRef}
+              onSubmitEditing={() => {
+                phoneFieldRef.current?.focus();
+              }}
+            />
 
-          <Input
-            name="phone"
-            label="Telefone"
-            placeholder="(00) 98765.4321"
-            returnKeyType="next"
-            autoCompleteType="tel"
-            textContentType="telephoneNumber"
-            keyboardType="phone-pad"
-            ref={phoneFieldRef}
-            onSubmitEditing={() => {
-              emailFieldRef.current?.focus();
-            }}
-          />
+            <Input
+              name="phone"
+              label="Telefone"
+              placeholder="(00) 98765.4321"
+              returnKeyType="next"
+              autoCompleteType="tel"
+              textContentType="telephoneNumber"
+              keyboardType="phone-pad"
+              ref={phoneFieldRef}
+              onSubmitEditing={() => {
+                emailFieldRef.current?.focus();
+              }}
+            />
 
-          <Input
-            autoCorrect={false}
-            name="email"
-            label="E-mail"
-            keyboardType="email-address"
-            returnKeyType="next"
-            autoCapitalize="none"
-            enablesReturnKeyAutomatically
-            autoCompleteType="email"
-            textContentType="emailAddress"
-            placeholder="emaildousuario@usuario"
-            ref={emailFieldRef}
-            onSubmitEditing={() => {
-              passwordFieldRef.current?.focus();
-            }}
-          />
+            <Input
+              autoCorrect={false}
+              name="email"
+              label="E-mail"
+              keyboardType="email-address"
+              returnKeyType="next"
+              autoCapitalize="none"
+              enablesReturnKeyAutomatically
+              autoCompleteType="email"
+              textContentType="emailAddress"
+              placeholder="emaildousuario@usuario"
+              ref={emailFieldRef}
+              onSubmitEditing={() => {
+                passwordFieldRef.current?.focus();
+              }}
+            />
 
-          <Input
-            name="password"
-            label="Senha"
-            placeholder="Digite uma senha"
-            returnKeyType="next"
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType="password"
-            ref={passwordFieldRef}
-            onSubmitEditing={() => {
-              confirmPasswordFieldRef.current?.focus();
-            }}
-          />
+            <Input
+              name="password"
+              label="Senha"
+              placeholder="Digite uma senha"
+              returnKeyType="next"
+              secureTextEntry
+              autoCapitalize="none"
+              textContentType="password"
+              ref={passwordFieldRef}
+              onSubmitEditing={() => {
+                confirmPasswordFieldRef.current?.focus();
+              }}
+            />
 
-          <Input
-            name="confirmPassword"
-            label="Confirme sua senha"
-            placeholder="Confirme sua senha"
-            returnKeyType="next"
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType="password"
-            ref={confirmPasswordFieldRef}
-            onSubmitEditing={() => {
-              Keyboard.dismiss();
-            }}
-          />
+            <Input
+              name="confirmPassword"
+              label="Confirme sua senha"
+              placeholder="Confirme sua senha"
+              returnKeyType="next"
+              secureTextEntry
+              autoCapitalize="none"
+              textContentType="password"
+              ref={confirmPasswordFieldRef}
+              onSubmitEditing={() => {
+                Keyboard.dismiss();
+              }}
+            />
 
-          <FormFieldSelect>
-            <Label>País:</Label>
-            <Picker
-              prompt="Selecione uma opção"
+            <Select
+              label="País"
               selectedValue={selectedCountry}
+              options={countries.map(country => ({
+                label: country.name,
+                value: country.id,
+              }))}
               onValueChange={handleSelectCountry}
-            >
-              {!isLoading &&
-                countries.map(({ name, id }) => (
-                  <Picker.Item key={id} label={name} value={id} />
-                ))}
-            </Picker>
-          </FormFieldSelect>
-          {selectedCountry === 'BRA' && !isLoading && (
-            <>
-              <FormFieldSelect>
-                <Label>Estado:</Label>
-                <Picker
-                  prompt="Selecione uma opção"
-                  selectedValue={selectedState}
-                  onValueChange={handleSelectState}
-                >
-                  {states.map(({ id, name }) => (
-                    <Picker.Item key={id} label={name} value={id} />
-                  ))}
-                </Picker>
-              </FormFieldSelect>
+            />
 
-              <FormFieldSelect>
-                <Label>Cidade:</Label>
-                <Picker
-                  prompt="Selecione uma opção"
-                  selectedValue={selectedCity}
-                  onValueChange={handleSelectCity}
-                >
-                  {cities.map(({ id, name }) => (
-                    <Picker.Item label={name} value={name} key={id} />
-                  ))}
-                </Picker>
-              </FormFieldSelect>
+            <>
+              <Select
+                label="Estado"
+                selectedValue={selectedState}
+                options={states.map(state => ({
+                  label: state.name,
+                  value: state.id,
+                }))}
+                onValueChange={handleSelectState}
+                enabled={!!states.length}
+              />
+
+              <Select
+                label="Cidade"
+                selectedValue={selectedCity}
+                options={cities.map(city => ({
+                  label: city.name,
+                  value: city.id,
+                }))}
+                onValueChange={handleSelectCity}
+                enabled={!!cities.length}
+              />
             </>
-          )}
-        </ScrollView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </LoginForm>
 
       <RegisterButton
-        title="Finalizar cadastro"
+        title={isLoading ? 'Aguarde...' : 'Finalizar cadastro'}
         onPress={() => {
           formRef.current?.submitForm();
         }}
